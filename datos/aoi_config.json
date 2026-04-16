@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "nota": "Editar este archivo para agregar/modificar zonas de interes volcanico.",
+  "umbrales_globales": {
+    "delta_ndvi_watch":    0.10,
+    "delta_ndvi_warning":  0.15,
+    "delta_ndvi_critical": 0.25,
+    "sigma_watch":    1.5,
+    "sigma_warning":  2.0,
+    "sigma_critical": 3.0,
+    "min_valid_pct":  30,
+    "min_dias_entre_fechas": 15,
+    "max_dias_entre_fechas": 120
+  },
+  "volcanes": {
+    "Laguna del Maule": {
+      "centro_lat": -36.07100,
+      "centro_lon": -70.49828,
+      "aois": [
+        {
+          "id": "sector_sur_co2",
+          "nombre": "Sector Sur — desgasificacion CO2",
+          "lat": -36.125,
+          "lon": -70.498,
+          "radio_m": 1200,
+          "descripcion": "Zona sur con aumento de CO2 reportado. Buscar GREENING por fertilizacion.",
+          "tipo_esperado": "GREENING",
+          "umbral_delta_abs": 0.10,
+          "activo": true
+        },
+        {
+          "id": "quebrada_este",
+          "nombre": "Quebrada Este",
+          "lat": -36.071,
+          "lon": -70.462,
+          "radio_m": 700,
+          "descripcion": "Quebrada en borde este del sistema. Zona de descarga hidrothermal potencial.",
+          "tipo_esperado": "BROWNING",
+          "umbral_delta_abs": 0.12,
+          "activo": true
+        },
+        {
+          "id": "borde_norte_caldera",
+          "nombre": "Borde Norte Caldera",
+          "lat": -36.045,
+          "lon": -70.498,
+          "radio_m": 800,
+          "descripcion": "Borde norte de la caldera. Area de monitoreo volcanico activo.",
+          "tipo_esperado": "BROWNING",
+          "umbral_delta_abs": 0.12,
+          "activo": true
+        },
+        {
+          "id": "control_norte",
+          "nombre": "Control Norte (referencia)",
+          "lat": -36.022,
+          "lon": -70.490,
+          "radio_m": 600,
+          "descripcion": "Zona de control alejada del sistema. Vegetacion sin influencia volcanica esperada.",
+          "tipo_esperado": "NINGUNO",
+          "umbral_delta_abs": 0.15,
+          "activo": true
+        }
+      ]
+    },
+    "Copahue": {
+      "centro_lat": -37.85715,
+      "centro_lon": -71.16836,
+      "aois": [
+        {
+          "id": "crater_activo",
+          "nombre": "Crater y fumarolas",
+          "lat": -37.856,
+          "lon": -71.172,
+          "radio_m": 800,
+          "descripcion": "Zona proximal al crater activo. SO2 puede causar BROWNING.",
+          "tipo_esperado": "BROWNING",
+          "umbral_delta_abs": 0.12,
+          "activo": true
+        },
+        {
+          "id": "rio_agrio_valle",
+          "nombre": "Valle Rio Agrio",
+          "lat": -37.870,
+          "lon": -71.155,
+          "radio_m": 900,
+          "descripcion": "Valle receptor de depositos acidos. Vegetacion sensible a cambios de pH.",
+          "tipo_esperado": "BROWNING",
+          "umbral_delta_abs": 0.12,
+          "activo": true
+        }
+      ]
+    },
+    "Villarrica": {
+      "centro_lat": -39.42052,
+      "centro_lon": -71.93939,
+      "aois": [
+        {
+          "id": "flanco_norte",
+          "nombre": "Flanco Norte (Nothofagus)",
+          "lat": -39.400,
+          "lon": -71.940,
+          "radio_m": 1000,
+          "descripcion": "Bosque Nothofagus en flanco norte. Muy sensible a deposicion acida.",
+          "tipo_esperado": "BROWNING",
+          "umbral_delta_abs": 0.12,
+          "activo": true
+        },
+        {
+          "id": "flanco_sur",
+          "nombre": "Flanco Sur",
+          "lat": -39.445,
+          "lon": -71.935,
+          "radio_m": 1000,
+          "descripcion": "Flanco sur. Control estacional.",
+          "tipo_esperado": "NINGUNO",
+          "umbral_delta_abs": 0.15,
+          "activo": true
+        }
+      ]
+    }
+  }
+}

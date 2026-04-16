@@ -1,0 +1,15 @@
+{
+  "last_updated": "2026-04-16",
+  "active_alerts": [
+    {
+      "volcan": "Laguna del Maule",
+      "nivel": "WARNING",
+      "aoi": "Borde Norte Caldera",
+      "delta_ndvi": 0.1569,
+      "tipo": "BROWNING",
+      "fecha_a": "2026-01-11",
+      "fecha_b": "2026-04-11",
+      "md_path": "docs\\alertas\\2026-04-16_Laguna_del_Maule.md"
+    }
+  ]
+}
