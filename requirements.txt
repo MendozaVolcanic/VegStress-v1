@@ -3,3 +3,5 @@ numpy
 matplotlib
 Pillow
 python-dotenv
+tifffile
+scipy

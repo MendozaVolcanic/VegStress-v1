@@ -1,17 +1,17 @@
-name: VegStress — NDVI Volcánico
+name: VegStress — NDVI Volcanico Chile
 
 on:
   schedule:
-    # Cada 5 días a las 14:00 UTC (después de sobrevuelo Sentinel-2)
+    # Cada 5 dias a las 14:00 UTC (despues de sobrevuelo Sentinel-2)
     - cron: '0 14 */5 * *'
   workflow_dispatch:
     inputs:
       volcan:
-        description: 'Volcán a analizar (o "todos")'
+        description: 'Volcan a analizar (o "todos")'
         required: false
-        default: 'Laguna del Maule'
+        default: 'todos'
       meses:
-        description: 'Meses hacia atrás'
+        description: 'Meses hacia atras'
         required: false
         default: '6'
 
@@ -30,19 +30,36 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run NDVI analysis
+      - name: Run NDVI analysis — todos los volcanes
+        if: ${{ github.event.inputs.volcan == 'todos' || github.event.inputs.volcan == '' || github.event_name == 'schedule' }}
         env:
           SH_CLIENT_ID: ${{ secrets.SH_CLIENT_ID }}
           SH_CLIENT_SECRET: ${{ secrets.SH_CLIENT_SECRET }}
         run: |
-          VOLCAN="${{ github.event.inputs.volcan || 'Laguna del Maule' }}"
           MESES="${{ github.event.inputs.meses || '6' }}"
-          python ndvi_analyzer.py --volcan "$VOLCAN" --meses "$MESES"
+          for VOLCAN in "Villarrica" "Copahue" "Llaima" "Calbuco" "Osorno" \
+                        "Puyehue - Cordon Caulle" "Chaiten" \
+                        "Nevados de Chillan" "Laguna del Maule" "Lascar"; do
+            echo "=== Analizando: $VOLCAN ==="
+            python ndvi_analyzer.py --volcan "$VOLCAN" --meses "$MESES" --no-images || echo "Error en $VOLCAN, continuando..."
+          done
 
-      - name: Commit results
+      - name: Run NDVI analysis — volcan especifico
+        if: ${{ github.event.inputs.volcan != 'todos' && github.event.inputs.volcan != '' && github.event_name != 'schedule' }}
+        env:
+          SH_CLIENT_ID: ${{ secrets.SH_CLIENT_ID }}
+          SH_CLIENT_SECRET: ${{ secrets.SH_CLIENT_SECRET }}
+        run: |
+          python ndvi_analyzer.py --volcan "${{ github.event.inputs.volcan }}" \
+            --meses "${{ github.event.inputs.meses || '6' }}" --no-images
+
+      - name: Generate dashboard
+        run: python dashboard_generator.py
+
+      - name: Commit and push results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A datos/ || true
+          git add datos/ docs/index.html || true
           git diff --staged --quiet || git commit -m "NDVI update: $(date -u +'%Y-%m-%d %H:%M UTC')"
           git push || true

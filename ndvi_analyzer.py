@@ -19,6 +19,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from io import BytesIO
 
+# Fix encoding en Windows
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+
 # Cargar .env si existe
 try:
     from dotenv import load_dotenv
@@ -39,8 +43,7 @@ EVALSCRIPT_NDVI = """
 function setup() {
   return {
     input: [{
-      bands: ["B04", "B08", "SCL"],
-      units: "REFLECTANCE"
+      bands: ["B04", "B08", "SCL"]
     }],
     output: {
       bands: 4,
@@ -194,19 +197,23 @@ def download_ndvi_stats(auth, lat, lon, fecha, buffer_km):
 
     # Parsear TIFF float32 con 4 bandas
     try:
-        from PIL import Image
-        import struct
+        import tifffile
 
-        img = Image.open(BytesIO(resp.content))
-        arr = np.array(img)
+        arr = tifffile.imread(BytesIO(resp.content))
 
         if arr.ndim == 3 and arr.shape[2] >= 4:
-            ndvi = arr[:, :, 0]
+            # tifffile retorna (height, width, bands)
+            ndvi = arr[:, :, 0].astype(np.float32)
             valid_mask = arr[:, :, 1] > 0.5
             cloud_mask = arr[:, :, 2] > 0.5
             snow_mask = arr[:, :, 3] > 0.5
+        elif arr.ndim == 3 and arr.shape[0] == 4:
+            # formato alternativo (bands, height, width)
+            ndvi = arr[0].astype(np.float32)
+            valid_mask = arr[1] > 0.5
+            cloud_mask = arr[2] > 0.5
+            snow_mask = arr[3] > 0.5
         else:
-            # Fallback: tratar como single band
             ndvi = arr.astype(np.float32)
             valid_mask = np.ones_like(ndvi, dtype=bool)
             cloud_mask = np.zeros_like(ndvi, dtype=bool)
