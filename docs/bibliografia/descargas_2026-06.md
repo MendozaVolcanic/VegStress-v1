@@ -72,4 +72,10 @@ de detección de cambios y CO2 — vale conseguirlos por VPN institucional.
 5. **HLS v2.0 (2025)** supersede a Claverie 2018 — relevante para el pipeline.
 6. **CR2MET (Zenodo) + CAMELS-CL** — controles de confusión sequía/clima para Chile. ✅ CAMELS descargado.
 
-## Perplexity Pro Deep Research (comparativo) — ver `perplexity_deepresearch_2026-06.md`
+## Perplexity Pro (comparativo) — ver `perplexity_hallazgos_2026-06.md`
+
+Aportó 2 hallazgos que las APIs gratis NO encontraron (valida AP20):
+1. **Etna RSE 2024** "Monitoring volcanic CO2 flux by remote sensing of vegetation
+   on Mt. Etna" (`S0034425724004346`) — caso operacional MÁS cercano a VegStress.
+   Preprint SSRN gratis (abstract 4762417) → descarga manual.
+2. **Bogue 2023 green-OA** en Chapman (la versión Wiley estaba bloqueada).
