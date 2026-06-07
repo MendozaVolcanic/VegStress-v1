@@ -4,7 +4,10 @@ Búsqueda con APIs gratis (arXiv/Crossref/OpenAlex/Semantic Scholar) vía 2 suba
 paralelos + Perplexity Pro Deep Research vía Chrome (comparativo, lección AP20).
 PDFs en `docs/bibliografia/pdfs/`. Verificación magic bytes §5.4 aplicada.
 
-## ✅ Descargados y verificados (PDF válido, %PDF- + tamaño OK)
+## ✅ Descargados y verificados (18 PDFs, %PDF- + tamaño OK, sin duplicados MD5)
+
+> Actualizado: 18 PDFs tras 2da pasada vía navegador (Chrome). Los 5 nuevos
+> (#14-18) se bajaron con el navegador real porque curl los bloqueaba (anti-bot).
 
 | # | Archivo | Tema | DOI | Fuente |
 |---|---|---|---|---|
@@ -21,6 +24,22 @@ PDFs en `docs/bibliografia/pdfs/`. Verificación magic bytes §5.4 aplicada.
 | 11 | `Eitel_2010_rededge_drought.pdf` | 4-Red-edge | 10.1093/jxb/erq201 | OUP (OA) |
 | 12 | `Zamorano_2011_Araucaria_discriminacion.pdf` | 6-Especies | 10.4067/s0717-92002011000200002 | SciELO Chile |
 | 13 | `Zamorano_2015_Araucaria_fragmentation.pdf` | 6-Especies | 10.3832/ifor1399-008 | iForest |
+| **14** | `Guinn_2024_Etna_CO2flux_vegetation.pdf` ⭐ | 1-Precursor/CO2 | 10.1016/j.rse.2024.114408 | SSRN preprint (navegador) |
+| **15** | `Valade_2019_MOUNTS_monitoring_system.pdf` ⭐ | 1-Sistema operacional | 10.3390/rs11131528 | MDPI (navegador) |
+| **16** | `Bogue_2023_PlantResponses_VolatileEmissions.pdf` | 3-CO2 tree-rings | 10.1029/2023GC010938 | Chapman green-OA (navegador) |
+| **17** | `iScience_2024_VolcanicCO2_Degassing_Review.pdf` ⭐ | 3-CO2 review | 10.1016/j.isci.2024.110990 | Cell Press OA (navegador) |
+| **18** | `SIF_NDVI_2024_comparison.pdf` | 4-SIF vs NDVI | 10.3390/rs16101735 | MDPI (navegador) |
+
+⭐ = alto valor. **Guinn 2024 Etna** es el caso operacional MÁS cercano a VegStress
+(CO2 vía teledetección de vegetación en volcán activo, 29 pp completas). **Valade 2019
+MOUNTS** es el sistema de referencia #1. **iScience review** es la síntesis ancla.
+
+### Técnica que funcionó (lección nueva para la guía)
+curl falla con bepress/MDPI/Cell/PNAS/Wiley (anti-bot Akamai/Cloudflare devuelve
+HTML 2-5KB). Solución: NAVEGADOR REAL con "Preguntar dónde guardar" APAGADO →
+navegar a la URL del PDF (o landing→/pdf en MDPI; o "Download This Paper" en SSRN)
+→ Chrome guarda en Downloads como `UUID.tmp` o nombre propio → `cp` a la carpeta.
+Cloudflare interstitial pasa SOLO (espera pasiva, sin resolver CAPTCHA).
 
 ## ⏳ Pendientes — descarga MANUAL vía navegador (editorial bloquea curl)
 
