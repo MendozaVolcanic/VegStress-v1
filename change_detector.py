@@ -41,6 +41,8 @@ from matplotlib.gridspec import GridSpec
 from vegstress_signal import (
     classify_change, pct_matching_sign, second_derivative_events,
 )
+# Geometría de AOIs (círculo o quebrada lineal). Funciones puras y testeadas.
+from aoi_geometry import aoi_to_mask
 
 ROOT = Path(__file__).parent
 DATOS = ROOT / "datos"
@@ -148,24 +150,16 @@ def compute_delta(arr_a, arr_b, umbrales):
 # ═══════════════════════════════════════════════════════════════
 
 def aoi_mask(aoi, bbox, shape):
-    """Crea mascara circular para un AOI dado bbox y shape del array."""
-    H, W = shape
-    lon_w, lat_s, lon_e, lat_n = bbox
-    lat, lon, radio_m = aoi['lat'], aoi['lon'], aoi['radio_m']
+    """Crea la mascara de un AOI dado bbox y shape del array.
 
-    # Coordenadas pixel del centro del AOI
-    cx = (lon - lon_w) / (lon_e - lon_w) * W
-    cy = (lat_n - lat) / (lat_n - lat_s) * H
-
-    # Radio en pixeles (aproximado a partir del buffer_km)
-    km_per_px_x = (lon_e - lon_w) * 111.0 * abs(math.cos(math.radians(lat))) / W
-    km_per_px_y = (lat_n - lat_s) * 111.0 / H
-    r_px_x = (radio_m / 1000.0) / km_per_px_x
-    r_px_y = (radio_m / 1000.0) / km_per_px_y
-
-    Y, X = np.ogrid[:H, :W]
-    mask = ((X - cx) / r_px_x) ** 2 + ((Y - cy) / r_px_y) ** 2 <= 1.0
-    return mask, (cx, cy)
+    Delega en aoi_geometry.aoi_to_mask, que soporta dos geometrias:
+      - CIRCULO: {lat, lon, radio_m} (compat. historica, identica a la formula previa).
+      - LINEA  : {waypoints:[[lat,lon],...], buffer_m} para QUEBRADAS de desgasificacion
+                 (CO2 difuso a <=30 m de la estructura, Guinn 2024 PD-001).
+    Devuelve (mask, center_px) para mantener la firma usada por el resto del pipeline.
+    """
+    mask, info = aoi_to_mask(aoi, bbox, shape)
+    return mask, info['center_px']
 
 
 def analyze_aoi(aoi, delta, arr_a, arr_b, bbox, umbrales):
@@ -203,7 +197,10 @@ def analyze_aoi(aoi, delta, arr_a, arr_b, bbox, umbrales):
             'ndvi_a': round(float(np.nanmean(aoi_a)), 4),
             'ndvi_b': round(float(np.nanmean(aoi_b)), 4),
             'status': 'SIN_VEGETACION',
-            'center_px': center_px, 'radio_m': aoi['radio_m'],
+            'center_px': center_px,
+            'radio_m': aoi.get('radio_m', aoi.get('buffer_m', 30)),
+            'geometria': 'linea' if aoi.get('waypoints') else 'circulo',
+            'waypoints': aoi.get('waypoints'),
             'nombre_corto': aoi['nombre'],
             'tipo': 'NINGUNO', 'nivel': 'OK',
         }
@@ -255,7 +252,9 @@ def analyze_aoi(aoi, delta, arr_a, arr_b, bbox, umbrales):
         'descripcion': aoi.get('descripcion', ''),
         'tipo_esperado': tipo_esperado,
         'center_px': center_px,
-        'radio_m': aoi['radio_m'],
+        'radio_m': aoi.get('radio_m', aoi.get('buffer_m', 30)),
+        'geometria': 'linea' if aoi.get('waypoints') else 'circulo',
+        'waypoints': aoi.get('waypoints'),
     }
 
 
@@ -349,10 +348,17 @@ def generate_delta_map(volcan_name, fecha_a, fecha_b, delta_result, aoi_results,
 
         color_borde = {'OK': '#22c55e', 'WATCH': '#eab308',
                        'WARNING': '#f97316', 'CRITICAL': '#ef4444'}.get(r['nivel'], 'white')
-        circ = plt.Circle((lon_c, lat_c), radio_deg,
-                           fill=False, edgecolor=color_borde,
-                           linewidth=2.0, linestyle='--', zorder=5)
-        ax_map.add_patch(circ)
+        if r.get('geometria') == 'linea' and r.get('waypoints'):
+            # Quebrada: dibujar la traza (polilinea) en vez de un circulo.
+            wp_lon = [w[1] for w in r['waypoints']]
+            wp_lat = [w[0] for w in r['waypoints']]
+            ax_map.plot(wp_lon, wp_lat, color=color_borde, linewidth=2.4,
+                        linestyle='-', zorder=5, solid_capstyle='round')
+        else:
+            circ = plt.Circle((lon_c, lat_c), radio_deg,
+                               fill=False, edgecolor=color_borde,
+                               linewidth=2.0, linestyle='--', zorder=5)
+            ax_map.add_patch(circ)
         ax_map.text(lon_c, lat_c + radio_deg * 1.15, r['nombre'],
                     ha='center', va='bottom', fontsize=7.5,
                     color=color_borde, fontweight='bold',
