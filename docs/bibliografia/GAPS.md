@@ -6,6 +6,15 @@
 
 ## 🔴 Prioridad ALTA (bloquean decisiones de diseño)
 
+- **🚨 LAS AOIs DE LAGUNA DEL MAULE NO TIENEN VEGETACIÓN (descubierto 2026-06-07).**
+  Al aplicar el filtro NDVI≥0.4 de Guinn 2024, las 4 AOIs dan **veg = 0-3%**: están sobre
+  roca/nieve de caldera a ~2200 m, no sobre vegetación. → La alerta WARNING previa de Borde
+  Norte (+0.157 browning) era **FALSO POSITIVO**: cambio estacional de nieve/roca verano→otoño.
+  **Acción**: reubicar las AOIs a terreno con vegetación real (cotas más bajas, donde haya
+  Nothofagus/matorral), usando el mapa NDVI espacial para elegir. O evaluar si Laguna del Maule
+  es viable para monitoreo vegetal en absoluto (puede estar sobre treeline). Requiere
+  conocimiento de campo de Nicolás + inspección del mapa espacial.
+
 - **⚠️ CONFLICTO DE DISEÑO (de fichar PD-001 Guinn 2024):** el detector actual asume
   **browning = alerta** con umbral absoluto de ΔNDVI. Pero Guinn 2024 prueba que la señal
   de **CO2 difuso es GREENING** (fertilización) y se detecta por **2ª derivada de la serie**,
