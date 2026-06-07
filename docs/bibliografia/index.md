@@ -4,8 +4,12 @@ Indice de literatura cientifica relevante para deteccion de estres volcanico via
 
 ## Documentos del proyecto
 
+- [**BIBLIOGRAPHY_SYNTHESIS.md**](./BIBLIOGRAPHY_SYNTHESIS.md) — **fuente de verdad**: solo
+  umbrales/fórmulas/coeficientes accionables para el pipeline (modelo VRP Chile). **Empezar acá.**
 - [Discriminacion estacional vs volcanico](./seasonal_vs_volcanic.md) — estrategia formal para
   separar fenologia natural de senal volcanica. **Lectura obligatoria.**
+- [Fichas](./fichas/INDICE_FICHAS.md) — una ficha por paper usado (sistema PD-/V2-, modelo Educación).
+- [GAPS](./GAPS.md) — lista viva de evidencia que falta (prioridad alta/media/baja).
 - [Papers completos](./papers_completo.md) — bibliografia indexada por tema (54 papers).
 - [Proyectos similares](./proyectos_similares.md) — sistemas/plataformas comparables (55 entradas).
 - [Preguntas de busqueda](./preguntas_busqueda.md) — Fase-0 (5 preguntas con output esperado).
@@ -26,13 +30,22 @@ docs/bibliografia/
 └── pdfs/                          ← 18 PDFs locales (gitignored, ~108MB)
 ```
 
-## Reglas
+## Reglas (adoptadas de VRP Chile + Educación y riesgos)
 
-1. **Cada idea metodologica nueva** debe citar al menos 1 paper en `papers_completo.md`.
-2. **Cada cambio de algoritmo** en `change_detector.py` referencia un DOI en su docstring.
-3. **PDFs** van en `pdfs/` con nombre `Autor_Anio_Tema.pdf` y NO se commitean
-   (gitignored; solo metadata + DOI en los .md). Verificar magic bytes post-descarga.
-4. Cuando un paper se aplica al codigo, agregar tag `[IMPLEMENTADO]` con fecha y commit hash.
+1. **Síntesis "solo números"**: todo umbral/fórmula/coeficiente que entra al código va a
+   `BIBLIOGRAPHY_SYNTHESIS.md` con DOI + página. La prosa/contexto va en la ficha, no ahí.
+2. **Una ficha por paper usado** (`fichas/PD-XXX_*.md`), con la plantilla `_PLANTILLA.md`.
+   Los de solo-contexto NO necesitan ficha (basta `papers_completo.md`).
+3. **Mapeo a código**: cada ficha declara "Dónde aplica" (qué archivo/función). Permite
+   consulta bidireccional: "¿qué papers sostienen este umbral?".
+4. **Trazabilidad código↔DOI**: `change_detector.py` cita en docstring el DOI del umbral
+   que implementa. Tag `[IMPLEMENTADO: fecha + commit]` cuando un paper pasa al código.
+5. **Anti-alucinación**: nunca inventar un número que el paper no da. Sin leerlo →
+   `[PENDIENTE DE LECTURA]`. Afiliación no confirmada en footer → `[VERIFICAR-AFILIACION]`.
+   Evidencia faltante → anotar en `GAPS.md`.
+6. **Canonicidad de autores**: antes de citar como autoridad, verificar afiliación
+   (ver `BIBLIOGRAPHY_SYNTHESIS.md §7`). No todo paper del tema es la misma escuela.
+7. **PDFs** en `pdfs/` con nombre `Autor_Anio_Tema.pdf`, gitignored, verificar magic bytes.
 
 ## Temas indexados
 
