@@ -43,6 +43,9 @@ from vegstress_signal import (
 )
 # Geometría de AOIs (círculo o quebrada lineal). Funciones puras y testeadas.
 from aoi_geometry import aoi_to_mask
+# Control del confusor climático (Guinn 2024 / De Schutter 2015). Importado a nivel de
+# módulo para que los tests puedan monkeypatchear build_climate_series sin red real.
+from climate_control import build_climate_series, apply_climate_control
 
 ROOT = Path(__file__).parent
 DATOS = ROOT / "datos"
@@ -163,6 +166,23 @@ def aoi_mask(aoi, bbox, shape):
     """
     mask, info = aoi_to_mask(aoi, bbox, shape)
     return mask, info['center_px']
+
+
+def aoi_center_latlon(aoi):
+    """Centro geográfico (lat, lon) de un AOI, para consultar el clima de la zona.
+
+    - CIRCULO: usa aoi['lat'] / aoi['lon'].
+    - LINEA (quebrada): promedio de los waypoints (cada waypoint es [lat, lon]).
+    El clima de Open-Meteo se pide en un único punto representativo del AOI; para una
+    quebrada de pocos km el centroide es suficiente (la lluvia antecedente varía poco
+    a esa escala frente al lag de ~48 d de De Schutter 2015).
+    """
+    wps = aoi.get('waypoints')
+    if wps:
+        lat = float(np.mean([w[0] for w in wps]))
+        lon = float(np.mean([w[1] for w in wps]))
+        return lat, lon
+    return float(aoi['lat']), float(aoi['lon'])
 
 
 def analyze_aoi(aoi, delta, arr_a, arr_b, bbox, umbrales):
@@ -478,9 +498,28 @@ def generate_delta_map(volcan_name, fecha_a, fecha_b, delta_result, aoi_results,
 # GENERACION DE ALERTAS
 # ═══════════════════════════════════════════════════════════════
 
+def load_climate_r2(volcan_name):
+    """Devuelve {aoi_id: r2_clima} desde timeseries_2da_deriv.json (o {} si no existe).
+
+    Permite que la alerta señale, por zona, si el clima explica parte de la señal NDVI
+    (r²>0.1, Guinn 2024) — es decir, un posible confusor climático que el lector debe
+    considerar antes de atribuir el cambio a actividad volcánica.
+    """
+    ts_path = DATOS / volcan_name.replace(" ", "_") / "timeseries_2da_deriv.json"
+    if not ts_path.exists():
+        return {}
+    try:
+        with open(ts_path, encoding='utf-8') as f:
+            ts = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return {}
+    return {aoi_id: v.get('r2_clima') for aoi_id, v in ts.items()}
+
+
 def generate_alerts(volcan_name, fecha_a, fecha_b, delta_result, aoi_results, volcan_config):
     alertas = []
     umbrales = load_config().get('umbrales_globales', {})
+    clima_r2 = load_climate_r2(volcan_name)
 
     for r in aoi_results:
         if r.get('status') == 'SIN_DATOS' or r.get('nivel') == 'OK':
@@ -506,6 +545,7 @@ def generate_alerts(volcan_name, fecha_a, fecha_b, delta_result, aoi_results, vo
             'coincide_esperado': r.get('coincide_esperado', False),
             'relevancia_volcanica': r.get('relevancia_volcanica', 'BAJA'),
             'pct_coincide_esperado': r.get('pct_coincide_esperado', 0),
+            'r2_clima': clima_r2.get(r['id']),
         })
 
     if not alertas:
@@ -571,6 +611,14 @@ def generate_alerts(volcan_name, fecha_a, fecha_b, delta_result, aoi_results, vo
             lines.append("")
             lines.append("> **Nota:** el signo del cambio COINCIDE con el mecanismo volcanico "
                          "esperado para esta zona. Senal de mayor relevancia — priorizar seguimiento.")
+        # Confusor climático: si el clima explica r²>0.1 de la varianza NDVI de esta zona
+        # (Guinn 2024), advertir que parte de la señal puede ser meteorológica, no volcánica.
+        r2c = a.get('r2_clima')
+        if r2c is not None and r2c > 0.1:
+            lines.append("")
+            lines.append(f"> **Nota:** posible confusor climático (r²={r2c:.2f}): el clima "
+                         f"explica parte de la señal. Interpretar la serie corregida por clima "
+                         f"antes de atribuir el cambio a actividad volcánica.")
         lines.append("")
 
     lines += [
@@ -629,11 +677,23 @@ def update_alerts_summary(new_alert):
 # ANALISIS DE SERIE TEMPORAL (2ª derivada — Guinn 2024)
 # ═══════════════════════════════════════════════════════════════
 
-def analyze_timeseries(volcan_name, aois_def):
+def analyze_timeseries(volcan_name, aois_def, clima=True):
     """
     Para cada AOI, construye la serie temporal de NDVI medio sobre TODAS las fechas
     con array .npy y calcula la 2ª derivada para marcar eventos de aceleración
     (sensu Guinn 2024 — picos de la 2ª derivada = eventos de recarga de magma).
+
+    CONTROL CLIMÁTICO (Guinn 2024 PD-001 + De Schutter 2015 PD-014):
+      Si clima=True, para cada AOI se pide la precipitación antecedente de la zona
+      (Open-Meteo) y se remueve por regresión lineal su influencia de la serie NDVI
+      cuando explica r²>0.1 de la varianza. Así la serie corregida distingue señal
+      volcánica del confusor estacional/sequía. Si la llamada de red falla, se captura
+      la excepción, se loguea un warning y se sigue con la serie cruda (no rompe el
+      pipeline). Con clima=False no se intenta ninguna llamada de red.
+
+    Campos añadidos por AOI en el JSON: ndvi_serie_corregida, r2_clima (float|None),
+    clima_removido (bool), d2_corregida y spike_fechas_corregidas (2ª derivada de la
+    serie corregida).
 
     Requiere >=4 fechas. Guarda resultado en datos/<volcan>/timeseries_2da_deriv.json
     para uso del dashboard. Devuelve dict {aoi_id: resultado} o None si insuficiente.
@@ -674,14 +734,44 @@ def analyze_timeseries(volcan_name, aois_def):
         if len(serie) < 4:
             continue
         ev = second_derivative_events(fechas_ok, serie, spike_sigma=1.5)
-        if ev.get('ok'):
-            out[aoi['id']] = {
-                'nombre': aoi['nombre'],
-                'fechas': fechas_ok,
-                'ndvi_serie': [round(v, 4) for v in serie],
-                'd2': [None if (x != x) else round(float(x), 5) for x in ev['d2']],
-                'spike_fechas': ev.get('spike_dates', []),
-            }
+        if not ev.get('ok'):
+            continue
+
+        # ── Control climático: remover el confusor precipitación si r²>0.1 ──
+        # Por defecto la serie corregida = cruda (caso sin clima o fallo de red).
+        serie_corr   = list(serie)
+        r2_clima     = None
+        clima_removido = False
+        if clima:
+            try:
+                lat, lon = aoi_center_latlon(aoi)
+                clim = build_climate_series(lat, lon, fechas_ok)
+                cc = apply_climate_control(serie, fechas_ok, clim, var='precip')
+                r2_clima       = round(float(cc['r2']), 4)
+                clima_removido = bool(cc['removed'])
+                if clima_removido:
+                    serie_corr = [float(v) for v in cc['residual']]
+            except Exception as e:  # fallo de red / API: no romper el pipeline
+                print(f"  [WARN] control climático omitido para AOI {aoi['id']} "
+                      f"({type(e).__name__}: {e}). Se usa la serie NDVI cruda.")
+                r2_clima = None
+                clima_removido = False
+
+        ev_corr = second_derivative_events(fechas_ok, serie_corr, spike_sigma=1.5)
+
+        out[aoi['id']] = {
+            'nombre': aoi['nombre'],
+            'fechas': fechas_ok,
+            'ndvi_serie': [round(v, 4) for v in serie],
+            'ndvi_serie_corregida': [round(float(v), 4) for v in serie_corr],
+            'r2_clima': r2_clima,
+            'clima_removido': clima_removido,
+            'd2': [None if (x != x) else round(float(x), 5) for x in ev['d2']],
+            'spike_fechas': ev.get('spike_dates', []),
+            'd2_corregida': ([None if (x != x) else round(float(x), 5)
+                              for x in ev_corr['d2']] if ev_corr.get('ok') else []),
+            'spike_fechas_corregidas': ev_corr.get('spike_dates', []),
+        }
 
     if not out:
         return None
@@ -696,7 +786,7 @@ def analyze_timeseries(volcan_name, aois_def):
 # PIPELINE PRINCIPAL
 # ═══════════════════════════════════════════════════════════════
 
-def run_detection(volcan_name, fecha_a=None, fecha_b=None):
+def run_detection(volcan_name, fecha_a=None, fecha_b=None, clima=True):
     print(f"\n{'='*60}")
     print(f" Change Detector — {volcan_name}")
     print(f"{'='*60}")
@@ -781,7 +871,7 @@ def run_detection(volcan_name, fecha_a=None, fecha_b=None):
 
     # Serie temporal: 2ª derivada (Guinn 2024) — solo si hay >=4 fechas
     if aois_def:
-        ts = analyze_timeseries(volcan_name, aois_def)
+        ts = analyze_timeseries(volcan_name, aois_def, clima=clima)
         if ts:
             n_spikes = sum(len(v['spike_fechas']) for v in ts.values())
             print(f"\n  Serie temporal (2ª derivada): {len(ts)} AOI(s), "
@@ -823,6 +913,10 @@ def main():
     parser.add_argument('--fecha_a', default=None, help='Fecha base YYYY-MM-DD')
     parser.add_argument('--fecha_b', default=None, help='Fecha actual YYYY-MM-DD')
     parser.add_argument('--todos',   action='store_true', help='Analizar todos los volcanes con datos')
+    parser.add_argument('--clima', dest='clima', action='store_true', default=True,
+                        help='Activar control climático (Open-Meteo) — DEFAULT')
+    parser.add_argument('--sin-clima', dest='clima', action='store_false',
+                        help='Desactivar control climático (correr sin red)')
     args = parser.parse_args()
 
     if args.todos:
@@ -830,11 +924,11 @@ def main():
         for vname in config.get('volcanes', {}):
             dates = list_available_dates(vname)
             if len(dates) >= 2:
-                run_detection(vname)
+                run_detection(vname, clima=args.clima)
             else:
                 print(f"\n  {vname}: sin suficientes arrays .npy (tiene {len(dates)})")
     else:
-        run_detection(args.volcan, args.fecha_a, args.fecha_b)
+        run_detection(args.volcan, args.fecha_a, args.fecha_b, clima=args.clima)
 
 
 if __name__ == '__main__':
