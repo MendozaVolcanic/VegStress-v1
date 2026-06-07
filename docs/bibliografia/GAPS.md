@@ -50,8 +50,27 @@
     **HALLAZGO:** comparación misma-estación verano 2025 vs 2026 → **Q8 (+0.118) y Q9 (+0.110)
     = GREENING WATCH rel=ALTA**, y son los 2 hilos más cercanos al sector de desgasificación
     sur. El control otoño-vs-otoño los muestra estables → el greening no es artefacto. Es el
-    precursor de fertilización por CO2 (Guinn). **Pendiente confirmar con clima** (¿verano
-    2025-26 más lluvioso? correr climate_control sobre Q8/Q9) y con más fechas inter-anuales.
+    precursor de fertilización por CO2 (Guinn).
+  - **🔬 ANÁLISIS 2026-06-07 (3 agentes paralelos) — el greening es MAYORMENTE CLIMÁTICO:**
+    1. **Clima (Open-Meteo, precip antecedente 48d De Schutter):** el verano 2025-26 fue
+       marcadamente más lluvioso (precip antec. ~28-48 mm vs ~1-8 mm en 2024-25). El greening
+       es generalizado en la cuenca (12/15 quebradas suben NDVI), no exclusivo del sur. **Q8 es
+       la ÚNICA quebrada donde el clima explica <10% de la varianza (r²=0.047, NO removido) →
+       señal robusta al modelo lineal.** Las otras 14 tienen r²>0.13 (clima-dominadas). **Q9
+       (r²=0.176) sí se explica por más lluvia → confusor, no robusto.**
+    2. **Localización espacial (analisis_localizacion_q8q9.py):** el greening de Q8/Q9 está
+       repartido DIFUSO a lo largo de toda la quebrada (61%/55% de píxeles enverdecen,
+       fragmentado en 11-18 parches chicos), NO un hotspot compacto <30 m como predice Guinn
+       para gas localizado. Hay gradiente sur→norte en intensidad (Q8/Q9 ~+0.11 → Q6 +0.088 →
+       Q3 +0.053), débilmente compatible con aporte volcánico difuso sobre el fondo climático.
+    3. **Wiring clima→detector:** implementado y testeado (control climático en analyze_timeseries,
+       nota de confusor en alertas, flag --sin-clima). Verificado end-to-end.
+    **VEREDICTO:** la señal de greening NO es un precursor confirmado; domina el clima. **Q8 es
+    el único candidato residual** (clima-robusto, más al sur) pero su patrón difuso debilita la
+    interpretación CO2. **PENDIENTE:** (a) confirmar con Nicolás que Q8/Q9 corresponden
+    geográficamente a quebradas de desgasificación conocida (el 1er waypoint de Q9 está al
+    OESTE, lon -70.582, no al sur); (b) datos de flujo CO2 de campo en el centroide de Q8;
+    (c) más fechas inter-anuales de verano (BLOQUEADO: credenciales CDSE vacías en .env).
 
 - **✅ RESUELTO (conflicto greening/browning):** tras fichar PD-003/PD-006/PD-011, el efecto del
   CO2 resultó **NO monotónico — depende del flujo**: bajo/moderado → GREENING (fertilización,

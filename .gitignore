@@ -8,3 +8,4 @@ __pycache__/
 docs/bibliografia/pdfs/*.pdf
 docs/bibliografia/pdfs/*.PDF
 docs/bibliografia/md/
+.claude/
