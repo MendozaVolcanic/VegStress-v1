@@ -11,17 +11,20 @@
   roca/nieve de caldera a ~2200 m, no sobre vegetación. → La alerta WARNING previa de Borde
   Norte (+0.157 browning) era **FALSO POSITIVO**: cambio estacional de nieve/roca verano→otoño.
   **Acción**: reubicar las AOIs a terreno con vegetación real (cotas más bajas, donde haya
-  Nothofagus/matorral), usando el mapa NDVI espacial para elegir. O evaluar si Laguna del Maule
-  es viable para monitoreo vegetal en absoluto (puede estar sobre treeline). Requiere
-  conocimiento de campo de Nicolás + inspección del mapa espacial.
+  Nothofagus/matorral), usando el mapa NDVI espacial para elegir. **Target citado**: bosque
+  Araucaria-Nothofagus sano tiene **NDVI ≈ 0.41-0.62** (Ojeda 2011, PD-016) → buscar AOIs en ese
+  rango. O evaluar si Laguna del Maule es viable para monitoreo vegetal (puede estar sobre
+  treeline). Requiere conocimiento de campo de Nicolás + inspección del mapa espacial.
 
-- **⚠️ CONFLICTO DE DISEÑO (de fichar PD-001 Guinn 2024):** el detector actual asume
-  **browning = alerta** con umbral absoluto de ΔNDVI. Pero Guinn 2024 prueba que la señal
-  de **CO2 difuso es GREENING** (fertilización) y se detecta por **2ª derivada de la serie**,
-  no por umbral absoluto. Biass 2022 muestra que el **browning es por tefra/ceniza** (otro
-  mecanismo). → **El signo del cambio identifica el mecanismo.** Resolver: rediseñar
-  `change_detector.py` para (a) distinguir greening vs browning, (b) evaluar 2ª derivada de
-  serie temporal, (c) buffer 30 m en AOIs. Esto es la mejora técnica #1.
+- **✅ RESUELTO (conflicto greening/browning):** tras fichar PD-003/PD-006/PD-011, el efecto del
+  CO2 resultó **NO monotónico — depende del flujo**: bajo/moderado → GREENING (fertilización,
+  Guinn); alto → BROWNING/kill zone (asfixia, Cawse-Nicholson NDVI 0.27→0.10 @ 200→800 g·m⁻²·d⁻¹;
+  Mammoth 200 000-950 000 ppm). El detector ya distingue ambos signos (implementado). Pendiente:
+  usar magnitud + contexto térmico/SO2 para separar fertilización de asfixia.
+- **Eitel red-edge: PDF EQUIVOCADO.** `Eitel_2010_rededge_drought.pdf` es en realidad
+  Berger/Parent/Tester 2010 (DOI 10.1093/jxb/erq201 = review de fenotipado). → **El lead-time de
+  red-edge vs NDVI sigue SIN evidencia cuantificada.** Descargar el correcto:
+  **Eitel, Gessler, Smith & Robberecht 2006**, Forest Ecol. Manag. 229:170-182.
 - **Umbrales ΔNDVI sin cita.** WATCH/WARNING/CRITICAL (0.10/0.15/0.25) siguen sin respaldo.
   Guinn no usa umbrales absolutos (usa 2ª derivada). → Decidir: ¿migramos a 2ª derivada o
   mantenemos umbral pero citado? Pendiente leer más casos (iScience PD-003, papers SIF 2025).
