@@ -38,10 +38,13 @@
 - **Umbrales ΔNDVI sin cita.** WATCH/WARNING/CRITICAL (0.10/0.15/0.25) siguen sin respaldo.
   Guinn no usa umbrales absolutos (usa 2ª derivada). → Decidir: ¿migramos a 2ª derivada o
   mantenemos umbral pero citado? Pendiente leer más casos (iScience PD-003, papers SIF 2025).
-- **Método de discriminación estacional vs volcánico no implementado.** Las estrategias en
-  `seasonal_vs_volcanic.md` están escritas pero no en código. Guinn aporta una concreta:
-  **remover por regresión lineal** la influencia de clima (lluvia/temp/humedad) cuando r²>0.1.
-  → Implementar.
+- **✅ PARCIALMENTE RESUELTO — control climático implementado (2026-06-07).** `climate_control.py`
+  remueve el confusor por regresión lineal NDVI~clima cuando r²>0.1 (Guinn) usando precipitación
+  antecedente de 48 días (De Schutter PD-014) vía Open-Meteo (gratis). Probado en Sector Sur:
+  el clima explicaba **34% de la varianza NDVI** → removido. **Pendiente**: (a) upgrade a CR2MET
+  (autoritativo Chile, PD-012) — interfaz lista en `fetch_climate_cr2met()`; (b) cablear el NDVI
+  corregido al detector de alertas; (c) implementar la comparación inter-anual misma-estación
+  (ya hay datos: Feb-2025 vs Ene-2026).
 - **Seminales de change-detection en paywall** (BFAST Verbesselt 2010/2012, CCDC Zhu 2014,
   LandTrendr Kennedy 2010). → Resolver: VPN SERNAGEOMIN o biblioteca.
 
