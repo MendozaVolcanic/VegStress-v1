@@ -15,6 +15,16 @@
   Araucaria-Nothofagus sano tiene **NDVI ≈ 0.41-0.62** (Ojeda 2011, PD-016) → buscar AOIs en ese
   rango. O evaluar si Laguna del Maule es viable para monitoreo vegetal (puede estar sobre
   treeline). Requiere conocimiento de campo de Nicolás + inspección del mapa espacial.
+  - **ACTUALIZACIÓN 2026-06-07 (aoi_finder.py):** solo **1.1% de la escena** es vegetación
+    estable. Los 5 parches grandes (NDVI 0.62-0.67, 8-18 ha) están en los **bordes/valles
+    bajos**, LEJOS del centro de caldera. Las zonas de desgasificación (Sector Sur, etc.)
+    están sobre roca pelada → **no monitoreables por vegetación directamente**. PERO hay
+    **vegetación riparia en hilos a lo largo de las quebradas** = justo donde Guinn dice que
+    el gas se concentra (30 m de la falla). **Decisión de diseño pendiente con Nicolás**:
+    (a) monitorear vegetación riparia de quebradas próximas a la caldera, o (b) usar los
+    parches de borde como control y aceptar que LdM no es ideal para señal vegetal directa.
+    Candidatas en `datos/Laguna_del_Maule/aoi_candidatas.json` + mapa
+    `docs/maps/Laguna_del_Maule_aoi_candidatas.png`.
 
 - **✅ RESUELTO (conflicto greening/browning):** tras fichar PD-003/PD-006/PD-011, el efecto del
   CO2 resultó **NO monotónico — depende del flujo**: bajo/moderado → GREENING (fertilización,
