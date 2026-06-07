@@ -5,12 +5,17 @@
     "delta_ndvi_watch":    0.10,
     "delta_ndvi_warning":  0.15,
     "delta_ndvi_critical": 0.25,
+    "_nota_umbrales": "PROVISIONAL: WATCH/WARNING/CRITICAL sin cita aun (ver GAPS.md). Guinn 2024 (PD-001) detecta por 2a derivada de serie, no umbral absoluto.",
     "sigma_watch":    1.5,
     "sigma_warning":  2.0,
     "sigma_critical": 3.0,
     "min_valid_pct":  30,
     "min_dias_entre_fechas": 15,
-    "max_dias_entre_fechas": 120
+    "max_dias_entre_fechas": 120,
+    "ndvi_min_valido": 0.4,
+    "_nota_ndvi_min": "Guinn 2024 L882: NDVI<0.4 se descarta (no es vegetacion fiable).",
+    "buffer_gas_difuso_m": 30,
+    "_nota_buffer_gas": "Guinn 2024 L1012/1616: el CO2 difuso se concentra en ~30m de la falla/quebrada. La senal es localizada; el promedio de un AOI grande la diluye. Por eso change_detector reporta pct_coincide_esperado."
   },
   "volcanes": {
     "Laguna del Maule": {

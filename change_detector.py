@@ -37,6 +37,11 @@ import matplotlib.colors as mcolors
 from matplotlib.patches import Circle
 from matplotlib.gridspec import GridSpec
 
+# Lógica de señal basada en evidencia (Guinn 2024 PD-001, Biass 2022 PD-002)
+from vegstress_signal import (
+    classify_change, pct_matching_sign, second_derivative_events,
+)
+
 ROOT = Path(__file__).parent
 DATOS = ROOT / "datos"
 DOCS  = ROOT / "docs"
@@ -164,14 +169,24 @@ def aoi_mask(aoi, bbox, shape):
 
 
 def analyze_aoi(aoi, delta, arr_a, arr_b, bbox, umbrales):
-    """Estadisticas de cambio dentro de un AOI."""
+    """Estadisticas de cambio dentro de un AOI.
+
+    Aplica el filtro de vegetacion de Guinn 2024 (PD-001, L882): solo se consideran
+    pixels con NDVI >= ndvi_min_valido (0.4) en AMBAS fechas. Asi se evita alertar
+    sobre agua/nieve/roca (NDVI bajo o negativo), cuyo cambio estacional NO es estres
+    de vegetacion. Si el AOI tiene poca vegetacion real, se marca SIN_VEGETACION.
+    """
     mask, center_px = aoi_mask(aoi, bbox, delta.shape)
     aoi_delta = delta[mask]
     aoi_a     = arr_a[mask]
     aoi_b     = arr_b[mask]
 
+    ndvi_min = umbrales.get('ndvi_min_valido', 0.4)
+    # Vegetacion fiable: NDVI>=umbral en ambas fechas y delta no-NaN (Guinn 2024 L882)
+    veg = (aoi_a >= ndvi_min) & (aoi_b >= ndvi_min) & ~np.isnan(aoi_delta)
     valid = ~np.isnan(aoi_delta)
     valid_pct = float(valid.sum() / mask.sum() * 100) if mask.sum() > 0 else 0
+    veg_pct   = float(veg.sum() / valid.sum() * 100) if valid.sum() > 0 else 0
 
     if valid.sum() < 20:
         return {
@@ -180,11 +195,25 @@ def analyze_aoi(aoi, delta, arr_a, arr_b, bbox, umbrales):
             'center_px': center_px,
         }
 
-    vals = aoi_delta[valid]
+    # Si <20% del AOI es vegetacion real, el cambio no es interpretable como estres vegetal
+    if veg.sum() < 20 or veg_pct < 20:
+        return {
+            'id': aoi['id'], 'nombre': aoi['nombre'],
+            'valid_pct': round(valid_pct, 1), 'veg_pct': round(veg_pct, 1),
+            'ndvi_a': round(float(np.nanmean(aoi_a)), 4),
+            'ndvi_b': round(float(np.nanmean(aoi_b)), 4),
+            'status': 'SIN_VEGETACION',
+            'center_px': center_px, 'radio_m': aoi['radio_m'],
+            'nombre_corto': aoi['nombre'],
+            'tipo': 'NINGUNO', 'nivel': 'OK',
+        }
+
+    # A partir de aca, solo pixels de vegetacion real
+    vals = aoi_delta[veg]
     delta_mean = float(np.mean(vals))
     delta_std  = float(np.std(vals))
-    ndvi_a     = float(np.nanmean(aoi_a))
-    ndvi_b     = float(np.nanmean(aoi_b))
+    ndvi_a     = float(np.mean(aoi_a[veg]))
+    ndvi_b     = float(np.mean(aoi_b[veg]))
 
     watch_abs    = aoi.get('umbral_delta_abs', umbrales.get('delta_ndvi_watch',   0.10))
     warning_abs  = aoi.get('umbral_delta_abs', umbrales.get('delta_ndvi_warning', 0.15))
@@ -200,24 +229,31 @@ def analyze_aoi(aoi, delta, arr_a, arr_b, bbox, umbrales):
     else:
         nivel = 'OK'
 
-    tipo = 'NINGUNO'
-    if delta_mean < -watch_abs:
-        tipo = 'GREENING'
-    elif delta_mean > watch_abs:
-        tipo = 'BROWNING'
+    # Clasificación signo-consciente (Guinn 2024 PD-001: el signo identifica el mecanismo).
+    tipo_esperado = aoi.get('tipo_esperado', 'NINGUNO')
+    cls = classify_change(delta_mean, tipo_esperado, umbral=watch_abs)
+    tipo = cls['tipo']
+
+    # % de píxeles de vegetación que coinciden con el signo esperado: revela señal localizada
+    # (Guinn 2024: el gas difuso se concentra en ~30 m, el promedio del AOI la diluye).
+    pct_coincide = pct_matching_sign(aoi_delta[veg], tipo_esperado, umbral=watch_abs)
 
     return {
         'id': aoi['id'],
         'nombre': aoi['nombre'],
         'valid_pct': round(valid_pct, 1),
+        'veg_pct': round(veg_pct, 1),
         'ndvi_a': round(ndvi_a, 4),
         'ndvi_b': round(ndvi_b, 4),
         'delta_mean': round(delta_mean, 4),
         'delta_std':  round(delta_std,  4),
         'tipo': tipo,
         'nivel': nivel,
+        'coincide_esperado': cls['coincide_esperado'],
+        'relevancia_volcanica': cls['relevancia_volcanica'],
+        'pct_coincide_esperado': round(pct_coincide, 1),
         'descripcion': aoi.get('descripcion', ''),
-        'tipo_esperado': aoi.get('tipo_esperado', 'NINGUNO'),
+        'tipo_esperado': tipo_esperado,
         'center_px': center_px,
         'radio_m': aoi['radio_m'],
     }
@@ -304,7 +340,7 @@ def generate_delta_map(volcan_name, fecha_a, fecha_b, delta_result, aoi_results,
 
     # Marcar AOIs
     for r in aoi_results:
-        if r.get('status') == 'SIN_DATOS':
+        if r.get('status') in ('SIN_DATOS', 'SIN_VEGETACION'):
             continue
         cx_px, cy_px = r['center_px']
         lon_c = lon_w + cx_px / W * (lon_e - lon_w)
@@ -400,9 +436,10 @@ def generate_delta_map(volcan_name, fecha_a, fecha_b, delta_result, aoi_results,
         if y < 0.04:
             break
         y -= 0.045
-        if r.get('status') == 'SIN_DATOS':
+        if r.get('status') in ('SIN_DATOS', 'SIN_VEGETACION'):
+            etiqueta = 'sin veg' if r.get('status') == 'SIN_VEGETACION' else 'N/D'
             txt(0.00, y, r['nombre'][:22], color='#555', fontsize=8)
-            txt(0.42, y, 'N/D',           color='#555', fontsize=8)
+            txt(0.42, y, etiqueta,        color='#555', fontsize=8)
             txt(0.60, y, 'N/D',           color='#555', fontsize=8)
             txt(0.78, y, 'N/D',           color='#555', fontsize=8)
         else:
@@ -456,6 +493,10 @@ def generate_alerts(volcan_name, fecha_a, fecha_b, delta_result, aoi_results, vo
             'ndvi_a': r['ndvi_a'],
             'ndvi_b': r['ndvi_b'],
             'descripcion': r['descripcion'],
+            'tipo_esperado': r.get('tipo_esperado', 'NINGUNO'),
+            'coincide_esperado': r.get('coincide_esperado', False),
+            'relevancia_volcanica': r.get('relevancia_volcanica', 'BAJA'),
+            'pct_coincide_esperado': r.get('pct_coincide_esperado', 0),
         })
 
     if not alertas:
@@ -490,22 +531,37 @@ def generate_alerts(volcan_name, fecha_a, fecha_b, delta_result, aoi_results, vo
 
     lines += ["", "## Detalle por zona", ""]
     for a in alertas:
+        coincide_str = ("SI — coincide con el mecanismo esperado" if a.get('coincide_esperado')
+                        else f"NO — se esperaba {a.get('tipo_esperado', 'NINGUNO')}")
         lines += [
             f"### {a['aoi_nombre']}",
             f"- **NDVI anterior ({fecha_a}):** {a['ndvi_a']:.4f}",
             f"- **NDVI actual ({fecha_b}):** {a['ndvi_b']:.4f}",
             f"- **Cambio (ΔNDVI):** {a['delta_ndvi']:+.4f}",
+            f"- **Tipo observado:** {a['tipo']}  |  **Esperado:** {a.get('tipo_esperado', 'NINGUNO')}  ({coincide_str})",
+            f"- **Relevancia volcanica:** {a.get('relevancia_volcanica', 'BAJA')}  "
+            f"(% pixels con signo esperado: {a.get('pct_coincide_esperado', 0):.0f}%)",
             f"- **Pixels validos:** {a['valid_pct']:.1f}%",
             f"- **Contexto:** {a['descripcion']}",
             f"",
             "**Interpretacion:**  ",
         ]
-        if a['tipo'] == 'BROWNING':
-            lines.append("Reduccion de biomasa vegetal. Posibles causas: deposicion de SO2, "
-                         "calentamiento geotermal de suelo, acidificacion, o sequia local.")
-        elif a['tipo'] == 'GREENING':
-            lines.append("Aumento de biomasa vegetal. Posibles causas: fertilizacion por CO2/SO2 "
-                         "en bajas concentraciones, mayor precipitacion, o recuperacion post-evento.")
+        # Interpretación basada en evidencia fichada (Guinn 2024 PD-001, Biass 2022 PD-002).
+        if a['tipo'] == 'GREENING':
+            lines.append("Aumento de vigor vegetal (NDVI sube). En zonas de desgasificacion difusa "
+                         "de CO2 esto es el PRECURSOR de interes: el CO2 magmatico fertiliza la "
+                         "vegetacion (Guinn et al. 2024, Mt. Etna, DOI 10.1016/j.rse.2024.114408). "
+                         "Tambien puede deberse a mayor precipitacion o recuperacion post-evento — "
+                         "descartar con control climatico (CR2MET).")
+        elif a['tipo'] == 'BROWNING':
+            lines.append("Reduccion de vigor vegetal (NDVI baja). Mecanismo tipico: deposicion de "
+                         "ceniza/tefra, SO2, acidificacion o calentamiento de suelo (Biass et al. "
+                         "2022, Cordon Caulle, DOI 10.5194/nhess-22-2829-2022). Tambien puede ser "
+                         "sequia o estacionalidad — descartar con control climatico y zona de control.")
+        if a.get('coincide_esperado'):
+            lines.append("")
+            lines.append("> **Nota:** el signo del cambio COINCIDE con el mecanismo volcanico "
+                         "esperado para esta zona. Senal de mayor relevancia — priorizar seguimiento.")
         lines.append("")
 
     lines += [
@@ -558,6 +614,70 @@ def update_alerts_summary(new_alert):
     with open(summary_path, 'w', encoding='utf-8') as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
     print(f"  Resumen alertas actualizado: {summary_path}")
+
+
+# ═══════════════════════════════════════════════════════════════
+# ANALISIS DE SERIE TEMPORAL (2ª derivada — Guinn 2024)
+# ═══════════════════════════════════════════════════════════════
+
+def analyze_timeseries(volcan_name, aois_def):
+    """
+    Para cada AOI, construye la serie temporal de NDVI medio sobre TODAS las fechas
+    con array .npy y calcula la 2ª derivada para marcar eventos de aceleración
+    (sensu Guinn 2024 — picos de la 2ª derivada = eventos de recarga de magma).
+
+    Requiere >=4 fechas. Guarda resultado en datos/<volcan>/timeseries_2da_deriv.json
+    para uso del dashboard. Devuelve dict {aoi_id: resultado} o None si insuficiente.
+    """
+    dates = list_available_dates(volcan_name)
+    if len(dates) < 4:
+        return None
+
+    arrays = {}
+    bbox = None
+    for f in dates:
+        arr, meta = load_array(volcan_name, f)
+        if arr is not None:
+            arrays[f] = arr
+            if bbox is None and meta.get('bbox'):
+                bbox = meta['bbox']
+    if bbox is None or len(arrays) < 4:
+        return None
+
+    out = {}
+    for aoi in aois_def:
+        # serie de NDVI medio del AOI por fecha (usando la fecha como referencia de shape)
+        serie = []
+        fechas_ok = []
+        for f in dates:
+            if f not in arrays:
+                continue
+            arr = arrays[f]
+            mask, _ = aoi_mask(aoi, bbox, arr.shape)
+            vals = arr[mask]
+            vals = vals[~np.isnan(vals)]
+            if len(vals) >= 20:
+                serie.append(float(np.mean(vals)))
+                fechas_ok.append(f)
+        if len(serie) < 4:
+            continue
+        ev = second_derivative_events(fechas_ok, serie, spike_sigma=1.5)
+        if ev.get('ok'):
+            out[aoi['id']] = {
+                'nombre': aoi['nombre'],
+                'fechas': fechas_ok,
+                'ndvi_serie': [round(v, 4) for v in serie],
+                'd2': [None if (x != x) else round(float(x), 5) for x in ev['d2']],
+                'spike_fechas': ev.get('spike_dates', []),
+            }
+
+    if not out:
+        return None
+
+    vdir = DATOS / volcan_name.replace(" ", "_")
+    with open(vdir / "timeseries_2da_deriv.json", 'w', encoding='utf-8') as f:
+        json.dump(out, f, indent=2, ensure_ascii=False)
+    return out
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -625,12 +745,29 @@ def run_detection(volcan_name, fecha_a=None, fecha_b=None):
         for aoi in aois_def:
             r = analyze_aoi(aoi, delta_result['delta'], arr_a, arr_b, bbox, umbrales)
             aoi_results.append(r)
-            status = r.get('nivel', r.get('status', '?'))
+            status = r.get('status') or r.get('nivel', '?')
             d = r.get('delta_mean')
-            dstr = f"{d:+.4f}" if d is not None else "N/D"
-            print(f"    [{status:8s}] {r['nombre'][:30]:30s}  ΔNDVI={dstr}  valid={r['valid_pct']:.0f}%")
+            dstr = f"{d:+.4f}" if d is not None else "  N/D  "
+            rel = r.get('relevancia_volcanica', '')
+            flag = ' <<<' if r.get('coincide_esperado') else ''
+            extra = ''
+            if r.get('status') == 'SIN_VEGETACION':
+                extra = f"  (veg={r.get('veg_pct',0):.0f}% NDVI<0.4 → no interpretable)"
+            print(f"    [{status:13s}] {r['nombre'][:28]:28s}  ΔNDVI={dstr}  "
+                  f"{r.get('tipo','?'):8s} rel={rel:5s}{flag}{extra}")
     else:
         print("  Sin AOIs configuradas para este volcan en aoi_config.json")
+
+    # Serie temporal: 2ª derivada (Guinn 2024) — solo si hay >=4 fechas
+    if aois_def:
+        ts = analyze_timeseries(volcan_name, aois_def)
+        if ts:
+            n_spikes = sum(len(v['spike_fechas']) for v in ts.values())
+            print(f"\n  Serie temporal (2ª derivada): {len(ts)} AOI(s), "
+                  f"{n_spikes} evento(s) de aceleracion detectado(s).")
+        elif len(list_available_dates(volcan_name)) < 4:
+            print(f"\n  Serie temporal (2ª derivada): omitida "
+                  f"({len(list_available_dates(volcan_name))} fechas, se necesitan >=4).")
 
     # Guardar historial
     update_history(volcan_name, fecha_a, fecha_b, aoi_results)
