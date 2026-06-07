@@ -12,8 +12,8 @@
 
 | ID | Archivo | Tema | Ficha creada | Leído |
 |---|---|---|---|---|
-| PD-001 | `Guinn_2024_Etna_CO2flux_vegetation.pdf` | 1-precursor ⭐ | ✅ | `[PENDIENTE]` |
-| PD-002 | `Biass_2022_CordonCaulle_Vegetation_Tephra_ML.pdf` | 2/3-Chile ⭐ | ⬜ | ⬜ |
+| PD-001 | `Guinn_2024_Etna_CO2flux_vegetation.pdf` | 1-precursor ⭐ | ✅ | ✅ |
+| PD-002 | `Biass_2022_CordonCaulle_Vegetation_Tephra_ML.pdf` | 2/3-Chile ⭐ | ✅ | ✅ parcial |
 | PD-003 | `iScience_2024_VolcanicCO2_Degassing_Review.pdf` | 3-review ⭐ | ⬜ | ⬜ |
 | PD-004 | `Valade_2019_MOUNTS_monitoring_system.pdf` | 5-sistema ⭐ | ⬜ | ⬜ |
 | PD-005 | `Bogue_2023_PlantResponses_VolatileEmissions.pdf` | 3-CO2 | ⬜ | ⬜ |

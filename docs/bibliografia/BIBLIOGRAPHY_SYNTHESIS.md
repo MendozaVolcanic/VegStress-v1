@@ -29,11 +29,20 @@
 
 ## 1. Núcleo — precursor volcánico vía vegetación
 
-### Guinn et al. 2024 — Monitoring volcanic CO2 flux by remote sensing of vegetation, Mt. Etna ⭐
-- **PDF**: `Guinn_2024_Etna_CO2flux_vegetation.pdf` (SSRN preprint, 29 pp) · DOI `10.1016/j.rse.2024.114408`
-- **Rol**: caso operacional MÁS cercano a VegStress. Mide flujo de CO2 difuso vía respuesta de vegetación en volcán activo.
-- **Extraer** (PENDIENTE LECTURA — fichar primero): qué índice usa, umbral de detección, resolución, lead-time vs actividad sísmica/desgasificación.
-- **Aplicabilidad**: hoja de ruta metodológica directa. **Leer ANTES de tocar más código.**
+### Guinn et al. 2024 — Monitoring volcanic CO2 flux by remote sensing of vegetation, Mt. Etna ⭐ LEÍDO
+- **PDF**: `Guinn_2024_Etna_CO2flux_vegetation.pdf` (SSRN preprint, 29 pp) · DOI `10.1016/j.rse.2024.114408` · ficha `PD-001`
+- **Rol**: caso operacional MÁS cercano a VegStress. Correlaciona NDVI satelital con flujo de CO2 del suelo (5 estaciones EtnaGas, 2011-2018).
+- **HALLAZGO QUE CAMBIA EL DISEÑO**: el CO2 volcánico difuso produce **GREENING** (fertilización
+  → NDVI sube), NO browning. Correlación CO2↔NDVI **positiva**.
+- **Método de detección**: **2ª derivada de la serie temporal de NDVI** → picos = eventos de
+  recarga de magma (16 detectados 2017-2018). NO usan umbral absoluto de ΔNDVI.
+- **Números citados** (líneas del preprint):
+  - Inter-calibración multi-sensor: polinomio 2º orden, **r²=0.5** (L1124)
+  - Filtro de calidad: **NDVI < 0.4 se descarta** (L882); solo 0% nubes, mejor-pixel/día
+  - **Buffer 30 m** alrededor de falla/quebrada (CO2 se disemina en primeros 30 m) (L1012,1616)
+  - Control de confusores: remover regresión lineal de lluvia/temp/humedad cuando **r²>0.1** (L1360)
+- **Aplicabilidad**: (1) revisar signo de alerta en `change_detector.py` (greening, no browning);
+  (2) migrar de ΔNDVI absoluto a 2ª derivada de serie; (3) buffer 30 m en AOIs.
 
 ### Farrar et al. 1995 — Forest-killing diffuse CO2, Mammoth Mountain
 - **PDF**: ❌ paywall (Nature, `10.1038/376675a0`) → VPN SERNAGEOMIN
@@ -129,9 +138,16 @@
 | NDVI bandas S2 | B08 (NIR) − B04 (Red) / suma | estándar | OK (definición) |
 | Resolución espacial | 10 m/px | Sentinel-2 L2A | OK |
 | Máscara nubes/nieve | SCL clases (DN) | S2 L2A ATBD | OK |
+| **NDVI mínimo válido** | **> 0.4** | Guinn 2024 L882 (10.1016/j.rse.2024.114408) | ✅ citado |
+| **Buffer desgasificación** | **30 m** alrededor de quebrada/falla | Guinn 2024 L1012/1616 | ✅ citado |
+| **Detección** | **2ª derivada de serie NDVI** (no ΔNDVI absoluto) | Guinn 2024 L125 | ✅ citado |
+| **Signo de señal CO2** | **GREENING** (NDVI↑), no browning | Guinn 2024 L121 | ✅ citado |
+| **Control confusores** | regresión lineal clima si r²>0.1 | Guinn 2024 L1360 | ✅ citado |
 
-**Acción pendiente**: tras leer Guinn 2024 y Biass 2022, reemplazar los `[VERIFICAR]`
-con umbrales citados. Cada cambio → docstring en `change_detector.py` con DOI.
+**Conflicto detectado**: los umbrales WATCH/WARNING/CRITICAL actuales asumen **browning**
+(ΔNDVI positivo = pérdida) y umbral absoluto. Guinn 2024 muestra que la señal de CO2 es
+**greening** y se detecta por 2ª derivada de la serie. → Ver `GAPS.md` 🔴. Falta leer
+Biass 2022 (caso Chile/tefra) para el otro mecanismo (daño por tefra = browning real).
 
 ---
 

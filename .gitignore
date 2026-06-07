@@ -7,3 +7,4 @@ __pycache__/
 .venv/
 docs/bibliografia/pdfs/*.pdf
 docs/bibliografia/pdfs/*.PDF
+docs/bibliografia/md/

@@ -6,12 +6,20 @@
 
 ## 🔴 Prioridad ALTA (bloquean decisiones de diseño)
 
-- **Umbrales ΔNDVI sin cita.** WATCH/WARNING/CRITICAL (0.10/0.15/0.25) son criterio
-  propio, sin respaldo bibliográfico. → Resolver: leer Guinn 2024 (PD-001) y Biass 2022
-  (PD-002), extraer umbrales validados, reemplazar en `change_detector.py` + `aoi_config.json`.
+- **⚠️ CONFLICTO DE DISEÑO (de fichar PD-001 Guinn 2024):** el detector actual asume
+  **browning = alerta** con umbral absoluto de ΔNDVI. Pero Guinn 2024 prueba que la señal
+  de **CO2 difuso es GREENING** (fertilización) y se detecta por **2ª derivada de la serie**,
+  no por umbral absoluto. Biass 2022 muestra que el **browning es por tefra/ceniza** (otro
+  mecanismo). → **El signo del cambio identifica el mecanismo.** Resolver: rediseñar
+  `change_detector.py` para (a) distinguir greening vs browning, (b) evaluar 2ª derivada de
+  serie temporal, (c) buffer 30 m en AOIs. Esto es la mejora técnica #1.
+- **Umbrales ΔNDVI sin cita.** WATCH/WARNING/CRITICAL (0.10/0.15/0.25) siguen sin respaldo.
+  Guinn no usa umbrales absolutos (usa 2ª derivada). → Decidir: ¿migramos a 2ª derivada o
+  mantenemos umbral pero citado? Pendiente leer más casos (iScience PD-003, papers SIF 2025).
 - **Método de discriminación estacional vs volcánico no implementado.** Las estrategias en
-  `seasonal_vs_volcanic.md` están escritas pero no en código. → Resolver: leer cómo lo
-  hace Guinn 2024 / BFAST, implementar Estrategia 1+2.
+  `seasonal_vs_volcanic.md` están escritas pero no en código. Guinn aporta una concreta:
+  **remover por regresión lineal** la influencia de clima (lluvia/temp/humedad) cuando r²>0.1.
+  → Implementar.
 - **Seminales de change-detection en paywall** (BFAST Verbesselt 2010/2012, CCDC Zhu 2014,
   LandTrendr Kennedy 2010). → Resolver: VPN SERNAGEOMIN o biblioteca.
 
