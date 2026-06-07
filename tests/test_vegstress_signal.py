@@ -16,26 +16,30 @@ from vegstress_signal import (
 
 
 # ── classify_change: el signo identifica el mecanismo (Guinn 2024) ──
+# CONVENIO (corregido 2026-06-07): ΔNDVI = NDVI_b - NDVI_a (posterior - base).
+#   ΔNDVI > 0  → NDVI SUBE → GREENING (ganancia de vigor; CO2/fertilización o lluvia)
+#   ΔNDVI < 0  → NDVI BAJA → BROWNING (pérdida de vigor; tefra/SO2/ácido o sequía)
+# Coherente con el path z-score (ndvi_analyzer / dashboard: z<0 = BROWNING).
 
 def test_greening_en_zona_co2_es_alta_relevancia():
-    # CO2 difuso → greening (delta negativo) en zona que ESPERA greening = señal precursora
-    r = classify_change(delta_mean=-0.18, tipo_esperado="GREENING", umbral=0.10)
+    # CO2 difuso → greening (NDVI sube, delta POSITIVO) en zona que espera greening
+    r = classify_change(delta_mean=0.18, tipo_esperado="GREENING", umbral=0.10)
     assert r["tipo"] == "GREENING"
     assert r["coincide_esperado"] is True
     assert r["relevancia_volcanica"] == "ALTA"
 
 
 def test_browning_en_zona_tefra_es_alta_relevancia():
-    # Tefra/ácido → browning (delta positivo) en zona que espera browning
-    r = classify_change(delta_mean=0.20, tipo_esperado="BROWNING", umbral=0.10)
+    # Tefra/ácido → browning (NDVI baja, delta NEGATIVO) en zona que espera browning
+    r = classify_change(delta_mean=-0.20, tipo_esperado="BROWNING", umbral=0.10)
     assert r["tipo"] == "BROWNING"
     assert r["coincide_esperado"] is True
     assert r["relevancia_volcanica"] == "ALTA"
 
 
 def test_signo_inesperado_es_media_relevancia():
-    # Browning donde se esperaba greening → señal pero del signo contrario → revisar
-    r = classify_change(delta_mean=0.20, tipo_esperado="GREENING", umbral=0.10)
+    # Browning (delta negativo) donde se esperaba greening → signo contrario → revisar
+    r = classify_change(delta_mean=-0.20, tipo_esperado="GREENING", umbral=0.10)
     assert r["tipo"] == "BROWNING"
     assert r["coincide_esperado"] is False
     assert r["relevancia_volcanica"] == "MEDIA"
@@ -47,17 +51,31 @@ def test_sin_cambio_es_baja_relevancia():
     assert r["relevancia_volcanica"] == "BAJA"
 
 
+def test_senescencia_otonal_es_browning():
+    # Caso real LdM: NDVI baja de verano a otoño (Δ negativo) → DEBE ser BROWNING
+    # (antes el bug lo marcaba GREENING). Es la prueba de regresión del bug de signo.
+    r = classify_change(delta_mean=-0.25, tipo_esperado="GREENING", umbral=0.10)
+    assert r["tipo"] == "BROWNING"
+
+
 # ── pct_matching_sign: señal localizada (Guinn: gas en 30 m de la fuente) ──
 
 def test_pct_matching_greening():
-    # 60% de los píxeles tienen greening fuerte, 40% sin cambio
-    arr = np.array([-0.2, -0.2, -0.2, 0.0, 0.0], dtype=float)
+    # 60% de los píxeles tienen greening fuerte (NDVI sube → delta POSITIVO), 40% sin cambio
+    arr = np.array([0.2, 0.2, 0.2, 0.0, 0.0], dtype=float)
     pct = pct_matching_sign(arr, "GREENING", umbral=0.10)
     assert abs(pct - 60.0) < 1e-6
 
 
+def test_pct_matching_browning():
+    # browning = NDVI baja = delta NEGATIVO
+    arr = np.array([-0.2, -0.2, 0.0, 0.0], dtype=float)  # 2 de 4 browning
+    pct = pct_matching_sign(arr, "BROWNING", umbral=0.10)
+    assert abs(pct - 50.0) < 1e-6
+
+
 def test_pct_matching_ignora_nan():
-    arr = np.array([-0.2, np.nan, -0.2, 0.0], dtype=float)  # 3 válidos, 2 greening
+    arr = np.array([0.2, np.nan, 0.2, 0.0], dtype=float)  # 3 válidos, 2 greening
     pct = pct_matching_sign(arr, "GREENING", umbral=0.10)
     assert abs(pct - (2 / 3 * 100)) < 1e-6
 

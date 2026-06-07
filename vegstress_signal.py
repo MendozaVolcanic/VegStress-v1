@@ -34,7 +34,12 @@ def classify_change(delta_mean: float, tipo_esperado: str = "NINGUNO",
     de la zona (Guinn 2024: greening = CO2/fertilización; browning = tefra/ácido).
 
     Args:
-        delta_mean: cambio medio de NDVI (B - A). Positivo = browning, negativo = greening.
+        delta_mean: cambio medio de NDVI (B - A, posterior menos base).
+            POSITIVO = NDVI sube = GREENING (ganancia de vigor).
+            NEGATIVO = NDVI baja = BROWNING (pérdida de vigor).
+            (Convenio estándar de teledetección; coherente con el path z-score de
+            ndvi_analyzer/dashboard donde z<0 = BROWNING. Corregido 2026-06-07: antes
+            estaba invertido y marcaba la caída de NDVI como greening.)
         tipo_esperado: "GREENING" | "BROWNING" | "NINGUNO" — mecanismo previsto para la zona.
         umbral: magnitud mínima para considerar el cambio significativo.
 
@@ -47,10 +52,10 @@ def classify_change(delta_mean: float, tipo_esperado: str = "NINGUNO",
             MEDIA = cambio significativo pero de signo inesperado (revisar)
             BAJA  = sin cambio significativo
     """
-    if delta_mean < -umbral:
-        tipo = "GREENING"
-    elif delta_mean > umbral:
-        tipo = "BROWNING"
+    if delta_mean > umbral:
+        tipo = "GREENING"      # NDVI sube → más vigor
+    elif delta_mean < -umbral:
+        tipo = "BROWNING"      # NDVI baja → menos vigor
     else:
         tipo = "NINGUNO"
 
@@ -95,9 +100,9 @@ def pct_matching_sign(delta_array: np.ndarray, tipo_esperado: str,
         return 0.0
     vals = delta_array[valid]
     if tipo_esperado == "GREENING":
-        match = (vals < -umbral).sum()
+        match = (vals > umbral).sum()    # NDVI sube
     else:  # BROWNING
-        match = (vals > umbral).sum()
+        match = (vals < -umbral).sum()   # NDVI baja
     return float(match) / n * 100.0
 
 

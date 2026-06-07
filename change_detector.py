@@ -48,17 +48,19 @@ ROOT = Path(__file__).parent
 DATOS = ROOT / "datos"
 DOCS  = ROOT / "docs"
 
-# ── Paleta divergente ΔNDVI (azul=greening, rojo=browning) ──────────────────
+# ── Paleta divergente ΔNDVI (convenio: ΔNDVI>0 = greening, <0 = browning) ────
+# Con TwoSlopeNorm(-0.4, 0, +0.4): posición 0.0 del cmap = ΔNDVI más negativo
+# (browning, NDVI baja → marrón/rojo); posición 1.0 = más positivo (greening → verde).
 DELTA_CMAP = mcolors.LinearSegmentedColormap.from_list('delta_ndvi', [
-    (0.00, '#1a4480'),  # greening fuerte
-    (0.20, '#4a9edd'),
-    (0.35, '#a8d4f0'),
-    (0.42, '#ddeeff'),
+    (0.00, '#7B0000'),  # browning fuerte (NDVI cae mucho)
+    (0.20, '#e05c20'),
+    (0.35, '#f5a742'),
+    (0.42, '#fde8c0'),
     (0.50, '#f0f0f0'),  # sin cambio
-    (0.58, '#fde8c0'),
-    (0.65, '#f5a742'),
-    (0.80, '#e05c20'),
-    (1.00, '#7B0000'),  # browning fuerte
+    (0.58, '#c9e8b0'),
+    (0.65, '#7cc35a'),
+    (0.80, '#3a9d23'),
+    (1.00, '#10500f'),  # greening fuerte (NDVI sube mucho)
 ], N=256)
 
 
@@ -140,8 +142,9 @@ def compute_delta(arr_a, arr_b, umbrales):
         'valid_pct':    float(valid.sum() / valid.size * 100),
         'delta_mean':   float(np.nanmean(delta)),
         'delta_std':    float(np.nanstd(delta)),
-        'greening_pct': float((delta[valid] < -watch_abs).sum() / valid.sum() * 100),
-        'browning_pct': float((delta[valid] >  watch_abs).sum() / valid.sum() * 100),
+        # Convenio: ΔNDVI>0 = greening (NDVI sube), <0 = browning (NDVI baja).
+        'greening_pct': float((delta[valid] >  watch_abs).sum() / valid.sum() * 100),
+        'browning_pct': float((delta[valid] < -watch_abs).sum() / valid.sum() * 100),
     }
 
 
@@ -370,7 +373,7 @@ def generate_delta_map(volcan_name, fecha_a, fecha_b, delta_result, aoi_results,
                         bbox=dict(boxstyle='round,pad=0.2', facecolor='black', alpha=0.6, linewidth=0))
 
     cbar = plt.colorbar(im, ax=ax_map, fraction=0.025, pad=0.01)
-    cbar.set_label('ΔNDVI (positivo = browning)', color='#8892a4', fontsize=9)
+    cbar.set_label('ΔNDVI (positivo = greening / ganancia de vigor)', color='#8892a4', fontsize=9)
     cbar.ax.yaxis.set_tick_params(color='#8892a4')
     plt.setp(cbar.ax.yaxis.get_ticklabels(), color='#8892a4')
 
@@ -412,12 +415,12 @@ def generate_delta_map(volcan_name, fecha_a, fecha_b, delta_result, aoi_results,
     txt(0, y, 'Escala ΔNDVI', color='#e2e8f0', fontsize=11, fontweight='bold')
     y -= 0.01
     items = [
-        ('#1a4480', '< -0.15  GREENING significativo'),
-        ('#4a9edd', '-0.15 a -0.05  GREENING leve'),
+        ('#7B0000', '< -0.25  BROWNING severo'),
+        ('#e05c20', '-0.25 a -0.15  BROWNING significativo'),
+        ('#f5a742', '-0.15 a -0.05  BROWNING leve'),
         ('#f0f0f0', '-0.05 a +0.05  Sin cambio'),
-        ('#f5a742', '+0.05 a +0.15  BROWNING leve'),
-        ('#e05c20', '+0.15 a +0.25  BROWNING significativo'),
-        ('#7B0000', '> +0.25   BROWNING severo'),
+        ('#7cc35a', '+0.05 a +0.15  GREENING leve'),
+        ('#10500f', '> +0.15   GREENING significativo'),
     ]
     from matplotlib.patches import Rectangle as Rect
     for col, label in items:
@@ -713,14 +716,23 @@ def run_detection(volcan_name, fecha_a=None, fecha_b=None):
     if not fecha_b:
         fecha_b = available[-1]
     if not fecha_a:
-        # Elegir fecha anterior, preferir misma estacion (~90 dias antes)
-        target = datetime.strptime(fecha_b, '%Y-%m-%d') - timedelta(days=90)
-        diffs = [(abs((datetime.strptime(f, '%Y-%m-%d') - target).days), f)
-                 for f in available if f < fecha_b]
-        if not diffs:
+        # Preferir control ESTACIONAL: misma estacion del ANO anterior (~365 dias antes).
+        # El cambio intra-anual (verano->otono) es senescencia, no senal volcanica: domina
+        # el confusor estacional. Comparar misma estacion anula la fenologia y deja ver la
+        # senal inter-anual (Guinn 2024). Si no hay fecha a ~1 ano (±45 d), caer a ~90 dias.
+        fb = datetime.strptime(fecha_b, '%Y-%m-%d')
+        prev = [f for f in available if f < fecha_b]
+        if not prev:
             fecha_a = available[-2]
         else:
-            fecha_a = min(diffs)[1]
+            target_yr = fb - timedelta(days=365)
+            best_yr = min(prev, key=lambda f: abs((datetime.strptime(f, '%Y-%m-%d') - target_yr).days))
+            gap_yr = abs((datetime.strptime(best_yr, '%Y-%m-%d') - target_yr).days)
+            if gap_yr <= 45:
+                fecha_a = best_yr  # misma estacion, ano anterior
+            else:
+                target_90 = fb - timedelta(days=90)
+                fecha_a = min(prev, key=lambda f: abs((datetime.strptime(f, '%Y-%m-%d') - target_90).days))
 
     print(f"  Comparando: {fecha_a}  →  {fecha_b}")
 

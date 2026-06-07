@@ -2,14 +2,14 @@
   "version": 1,
   "nota": "Editar este archivo para agregar/modificar zonas de interes volcanico.",
   "umbrales_globales": {
-    "delta_ndvi_watch":    0.10,
-    "delta_ndvi_warning":  0.15,
+    "delta_ndvi_watch": 0.1,
+    "delta_ndvi_warning": 0.15,
     "delta_ndvi_critical": 0.25,
     "_nota_umbrales": "PROVISIONAL: WATCH/WARNING/CRITICAL sin cita aun (ver GAPS.md). Guinn 2024 (PD-001) detecta por 2a derivada de serie, no umbral absoluto.",
-    "sigma_watch":    1.5,
-    "sigma_warning":  2.0,
+    "sigma_watch": 1.5,
+    "sigma_warning": 2.0,
     "sigma_critical": 3.0,
-    "min_valid_pct":  30,
+    "min_valid_pct": 30,
     "min_dias_entre_fechas": 15,
     "max_dias_entre_fechas": 120,
     "ndvi_min_valido": 0.4,
@@ -19,7 +19,7 @@
   },
   "volcanes": {
     "Laguna del Maule": {
-      "centro_lat": -36.07100,
+      "centro_lat": -36.071,
       "centro_lon": -70.49828,
       "aois": [
         {
@@ -30,8 +30,9 @@
           "radio_m": 1200,
           "descripcion": "Zona sur con aumento de CO2 reportado. Buscar GREENING por fertilizacion.",
           "tipo_esperado": "GREENING",
-          "umbral_delta_abs": 0.10,
-          "activo": true
+          "umbral_delta_abs": 0.1,
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-07: circulo sobre roca/nieve (veg<4%, SIN_VEGETACION). Reemplazada por AOIs de quebrada riparia (Guinn 2024)."
         },
         {
           "id": "quebrada_este",
@@ -42,7 +43,8 @@
           "descripcion": "Quebrada en borde este del sistema. Zona de descarga hidrothermal potencial.",
           "tipo_esperado": "BROWNING",
           "umbral_delta_abs": 0.12,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-07: circulo sobre roca/nieve (veg<4%, SIN_VEGETACION). Reemplazada por AOIs de quebrada riparia (Guinn 2024)."
         },
         {
           "id": "borde_norte_caldera",
@@ -53,17 +55,991 @@
           "descripcion": "Borde norte de la caldera. Area de monitoreo volcanico activo.",
           "tipo_esperado": "BROWNING",
           "umbral_delta_abs": 0.12,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-07: circulo sobre roca/nieve (veg<4%, SIN_VEGETACION). Reemplazada por AOIs de quebrada riparia (Guinn 2024)."
         },
         {
           "id": "control_norte",
           "nombre": "Control Norte (referencia)",
           "lat": -36.022,
-          "lon": -70.490,
+          "lon": -70.49,
           "radio_m": 600,
           "descripcion": "Zona de control alejada del sistema. Vegetacion sin influencia volcanica esperada.",
           "tipo_esperado": "NINGUNO",
           "umbral_delta_abs": 0.15,
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-07: circulo sobre roca/nieve (veg<4%, SIN_VEGETACION). Reemplazada por AOIs de quebrada riparia (Guinn 2024)."
+        },
+        {
+          "id": "quebrada_Q1",
+          "nombre": "Quebrada Q1",
+          "waypoints": [
+            [
+              -36.00145,
+              -70.43285
+            ],
+            [
+              -36.00226,
+              -70.43297
+            ],
+            [
+              -36.00262,
+              -70.43297
+            ],
+            [
+              -36.00307,
+              -70.43319
+            ],
+            [
+              -36.00289,
+              -70.43352
+            ],
+            [
+              -36.00352,
+              -70.4333
+            ],
+            [
+              -36.00217,
+              -70.43441
+            ],
+            [
+              -36.00307,
+              -70.43397
+            ],
+            [
+              -36.00163,
+              -70.43508
+            ],
+            [
+              -36.00307,
+              -70.43441
+            ],
+            [
+              -36.00163,
+              -70.43553
+            ],
+            [
+              -36.00244,
+              -70.43542
+            ],
+            [
+              -36.0028,
+              -70.43564
+            ],
+            [
+              -36.00307,
+              -70.4362
+            ],
+            [
+              -36.00352,
+              -70.4362
+            ],
+            [
+              -36.00343,
+              -70.43664
+            ],
+            [
+              -36.00379,
+              -70.43676
+            ],
+            [
+              -36.00343,
+              -70.43765
+            ],
+            [
+              -36.00316,
+              -70.4382
+            ],
+            [
+              -36.00343,
+              -70.43865
+            ],
+            [
+              -36.00451,
+              -70.43843
+            ],
+            [
+              -36.00433,
+              -70.43898
+            ],
+            [
+              -36.00478,
+              -70.43887
+            ],
+            [
+              -36.00388,
+              -70.43988
+            ],
+            [
+              -36.00442,
+              -70.43976
+            ],
+            [
+              -36.00577,
+              -70.4391
+            ],
+            [
+              -36.00586,
+              -70.4391
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 2247 m, ancho 31.4 m, NDVI 0.683, dist_caldera 9.37 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q2",
+          "nombre": "Quebrada Q2",
+          "waypoints": [
+            [
+              -36.14785,
+              -70.50809
+            ],
+            [
+              -36.14812,
+              -70.50876
+            ],
+            [
+              -36.14812,
+              -70.5092
+            ],
+            [
+              -36.14776,
+              -70.50965
+            ],
+            [
+              -36.14785,
+              -70.50987
+            ],
+            [
+              -36.14704,
+              -70.51065
+            ],
+            [
+              -36.14704,
+              -70.51099
+            ],
+            [
+              -36.14686,
+              -70.51132
+            ],
+            [
+              -36.14947,
+              -70.50998
+            ],
+            [
+              -36.14659,
+              -70.51177
+            ],
+            [
+              -36.14794,
+              -70.51121
+            ],
+            [
+              -36.14848,
+              -70.51143
+            ],
+            [
+              -36.14902,
+              -70.51154
+            ],
+            [
+              -36.14965,
+              -70.51154
+            ],
+            [
+              -36.14857,
+              -70.51299
+            ],
+            [
+              -36.14911,
+              -70.5131
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 1628 m, ancho 46.7 m, NDVI 0.693, dist_caldera 8.64 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q3",
+          "nombre": "Quebrada Q3",
+          "waypoints": [
+            [
+              -36.00722,
+              -70.41134
+            ],
+            [
+              -36.00632,
+              -70.40956
+            ],
+            [
+              -36.00776,
+              -70.41101
+            ],
+            [
+              -36.00785,
+              -70.4109
+            ],
+            [
+              -36.00713,
+              -70.40967
+            ],
+            [
+              -36.00785,
+              -70.41034
+            ],
+            [
+              -36.00794,
+              -70.41012
+            ],
+            [
+              -36.00776,
+              -70.40956
+            ],
+            [
+              -36.00794,
+              -70.40956
+            ],
+            [
+              -36.00812,
+              -70.40934
+            ],
+            [
+              -36.00812,
+              -70.409
+            ],
+            [
+              -36.00776,
+              -70.40822
+            ],
+            [
+              -36.00866,
+              -70.40878
+            ],
+            [
+              -36.00884,
+              -70.40833
+            ],
+            [
+              -36.00911,
+              -70.40822
+            ],
+            [
+              -36.00929,
+              -70.40766
+            ],
+            [
+              -36.00947,
+              -70.40688
+            ],
+            [
+              -36.00992,
+              -70.40655
+            ],
+            [
+              -36.0101,
+              -70.4061
+            ],
+            [
+              -36.01082,
+              -70.4061
+            ],
+            [
+              -36.01064,
+              -70.40566
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 1423 m, ancho 45.0 m, NDVI 0.689, dist_caldera 10.64 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q4",
+          "nombre": "Quebrada Q4",
+          "waypoints": [
+            [
+              -36.11325,
+              -70.40577
+            ],
+            [
+              -36.11388,
+              -70.40566
+            ],
+            [
+              -36.11451,
+              -70.40633
+            ],
+            [
+              -36.11442,
+              -70.40544
+            ],
+            [
+              -36.11487,
+              -70.40544
+            ],
+            [
+              -36.11532,
+              -70.40532
+            ],
+            [
+              -36.11514,
+              -70.40432
+            ],
+            [
+              -36.11559,
+              -70.40466
+            ],
+            [
+              -36.11505,
+              -70.40309
+            ],
+            [
+              -36.11532,
+              -70.40332
+            ],
+            [
+              -36.11586,
+              -70.40376
+            ],
+            [
+              -36.11641,
+              -70.4041
+            ],
+            [
+              -36.1165,
+              -70.40376
+            ],
+            [
+              -36.1165,
+              -70.40321
+            ],
+            [
+              -36.11695,
+              -70.40309
+            ],
+            [
+              -36.11731,
+              -70.40276
+            ],
+            [
+              -36.1174,
+              -70.4022
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 1056 m, ancho 41.1 m, NDVI 0.654, dist_caldera 9.77 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q5",
+          "nombre": "Quebrada Q5",
+          "waypoints": [
+            [
+              -36.12019,
+              -70.57719
+            ],
+            [
+              -36.1201,
+              -70.57775
+            ],
+            [
+              -36.12028,
+              -70.57775
+            ],
+            [
+              -36.12028,
+              -70.57831
+            ],
+            [
+              -36.1201,
+              -70.57931
+            ],
+            [
+              -36.12055,
+              -70.57953
+            ],
+            [
+              -36.12226,
+              -70.57764
+            ],
+            [
+              -36.12208,
+              -70.5782
+            ],
+            [
+              -36.12127,
+              -70.58009
+            ],
+            [
+              -36.12199,
+              -70.57953
+            ],
+            [
+              -36.12253,
+              -70.57942
+            ],
+            [
+              -36.12262,
+              -70.58031
+            ],
+            [
+              -36.12307,
+              -70.5802
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 1055 m, ancho 41.6 m, NDVI 0.697, dist_caldera 9.12 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q6",
+          "nombre": "Quebrada Q6",
+          "waypoints": [
+            [
+              -35.99442,
+              -70.59235
+            ],
+            [
+              -35.99469,
+              -70.59268
+            ],
+            [
+              -35.99541,
+              -70.59324
+            ],
+            [
+              -35.99595,
+              -70.59347
+            ],
+            [
+              -35.99632,
+              -70.59358
+            ],
+            [
+              -35.99677,
+              -70.59335
+            ],
+            [
+              -35.99668,
+              -70.59402
+            ],
+            [
+              -35.99776,
+              -70.59391
+            ],
+            [
+              -35.9983,
+              -70.5948
+            ],
+            [
+              -35.99839,
+              -70.59547
+            ],
+            [
+              -35.99884,
+              -70.59592
+            ],
+            [
+              -35.99911,
+              -70.59659
+            ],
+            [
+              -35.99884,
+              -70.59748
+            ],
+            [
+              -35.99893,
+              -70.5977
+            ],
+            [
+              -35.99938,
+              -70.59748
+            ],
+            [
+              -35.99965,
+              -70.59781
+            ],
+            [
+              -36.0001,
+              -70.59781
+            ],
+            [
+              -36.00028,
+              -70.59803
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 1051 m, ancho 37.1 m, NDVI 0.679, dist_caldera 11.92 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q7",
+          "nombre": "Quebrada Q7",
+          "waypoints": [
+            [
+              -36.1255,
+              -70.40867
+            ],
+            [
+              -36.12677,
+              -70.40923
+            ],
+            [
+              -36.12686,
+              -70.40867
+            ],
+            [
+              -36.12722,
+              -70.40878
+            ],
+            [
+              -36.12677,
+              -70.40766
+            ],
+            [
+              -36.12785,
+              -70.409
+            ],
+            [
+              -36.12803,
+              -70.40867
+            ],
+            [
+              -36.12857,
+              -70.40733
+            ],
+            [
+              -36.12875,
+              -70.40599
+            ],
+            [
+              -36.12875,
+              -70.40555
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 854 m, ancho 40.5 m, NDVI 0.626, dist_caldera 10.23 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q8",
+          "nombre": "Quebrada Q8",
+          "waypoints": [
+            [
+              -36.12938,
+              -70.47565
+            ],
+            [
+              -36.12992,
+              -70.47655
+            ],
+            [
+              -36.13028,
+              -70.47688
+            ],
+            [
+              -36.13064,
+              -70.47733
+            ],
+            [
+              -36.13109,
+              -70.47744
+            ],
+            [
+              -36.13109,
+              -70.47799
+            ],
+            [
+              -36.13118,
+              -70.47866
+            ],
+            [
+              -36.13163,
+              -70.47866
+            ],
+            [
+              -36.13109,
+              -70.47967
+            ],
+            [
+              -36.13136,
+              -70.48011
+            ],
+            [
+              -36.13154,
+              -70.48056
+            ],
+            [
+              -36.13253,
+              -70.48034
+            ],
+            [
+              -36.13316,
+              -70.481
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 825 m, ancho 31.0 m, NDVI 0.642, dist_caldera 6.92 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q9",
+          "nombre": "Quebrada Q9",
+          "waypoints": [
+            [
+              -36.12469,
+              -70.58198
+            ],
+            [
+              -36.12487,
+              -70.58221
+            ],
+            [
+              -36.12595,
+              -70.58254
+            ],
+            [
+              -36.12695,
+              -70.58187
+            ],
+            [
+              -36.1274,
+              -70.5812
+            ],
+            [
+              -36.12785,
+              -70.5812
+            ],
+            [
+              -36.12848,
+              -70.58076
+            ],
+            [
+              -36.1292,
+              -70.58098
+            ],
+            [
+              -36.1292,
+              -70.58065
+            ],
+            [
+              -36.12929,
+              -70.57998
+            ],
+            [
+              -36.12974,
+              -70.58042
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 723 m, ancho 43.7 m, NDVI 0.716, dist_caldera 9.76 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q10",
+          "nombre": "Quebrada Q10",
+          "waypoints": [
+            [
+              -36.08965,
+              -70.58399
+            ],
+            [
+              -36.08929,
+              -70.58477
+            ],
+            [
+              -36.08974,
+              -70.58511
+            ],
+            [
+              -36.08974,
+              -70.58555
+            ],
+            [
+              -36.08992,
+              -70.586
+            ],
+            [
+              -36.08992,
+              -70.58667
+            ],
+            [
+              -36.08983,
+              -70.58745
+            ],
+            [
+              -36.09001,
+              -70.58845
+            ],
+            [
+              -36.09019,
+              -70.58934
+            ],
+            [
+              -36.09001,
+              -70.59046
+            ],
+            [
+              -36.0901,
+              -70.5909
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 672 m, ancho 45.1 m, NDVI 0.65, dist_caldera 8.22 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q11",
+          "nombre": "Quebrada Q11",
+          "waypoints": [
+            [
+              -36.12046,
+              -70.39819
+            ],
+            [
+              -36.12073,
+              -70.39819
+            ],
+            [
+              -36.12127,
+              -70.39819
+            ],
+            [
+              -36.12001,
+              -70.39931
+            ],
+            [
+              -36.11992,
+              -70.39997
+            ],
+            [
+              -36.12037,
+              -70.40009
+            ],
+            [
+              -36.12046,
+              -70.40075
+            ],
+            [
+              -36.12127,
+              -70.40087
+            ],
+            [
+              -36.12136,
+              -70.40131
+            ],
+            [
+              -36.1219,
+              -70.40153
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 630 m, ancho 28.9 m, NDVI 0.639, dist_caldera 10.41 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q12",
+          "nombre": "Quebrada Q12",
+          "waypoints": [
+            [
+              -36.0046,
+              -70.48323
+            ],
+            [
+              -36.00532,
+              -70.48234
+            ],
+            [
+              -36.00595,
+              -70.48279
+            ],
+            [
+              -36.00668,
+              -70.48334
+            ],
+            [
+              -36.00704,
+              -70.48234
+            ],
+            [
+              -36.00731,
+              -70.48156
+            ],
+            [
+              -36.00776,
+              -70.48212
+            ],
+            [
+              -36.00803,
+              -70.48167
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 583 m, ancho 37.2 m, NDVI 0.591, dist_caldera 7.29 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q13",
+          "nombre": "Quebrada Q13",
+          "waypoints": [
+            [
+              -35.98992,
+              -70.40153
+            ],
+            [
+              -35.99037,
+              -70.40176
+            ],
+            [
+              -35.99064,
+              -70.40042
+            ],
+            [
+              -35.99091,
+              -70.40042
+            ],
+            [
+              -35.99118,
+              -70.4012
+            ],
+            [
+              -35.99154,
+              -70.40142
+            ],
+            [
+              -35.9919,
+              -70.40131
+            ],
+            [
+              -35.99226,
+              -70.40142
+            ],
+            [
+              -35.99262,
+              -70.4012
+            ],
+            [
+              -35.99316,
+              -70.40064
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 534 m, ancho 33.4 m, NDVI 0.656, dist_caldera 12.42 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q14",
+          "nombre": "Quebrada Q14",
+          "waypoints": [
+            [
+              -36.11028,
+              -70.4061
+            ],
+            [
+              -36.11172,
+              -70.40722
+            ],
+            [
+              -36.11145,
+              -70.40566
+            ],
+            [
+              -36.11172,
+              -70.40544
+            ],
+            [
+              -36.11226,
+              -70.40555
+            ],
+            [
+              -36.11244,
+              -70.40521
+            ],
+            [
+              -36.1128,
+              -70.40532
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 506 m, ancho 49.6 m, NDVI 0.602, dist_caldera 9.46 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "quebrada_Q15",
+          "nombre": "Quebrada Q15",
+          "waypoints": [
+            [
+              -35.9901,
+              -70.51188
+            ],
+            [
+              -35.99046,
+              -70.5111
+            ],
+            [
+              -35.99136,
+              -70.51232
+            ],
+            [
+              -35.99199,
+              -70.51121
+            ],
+            [
+              -35.99307,
+              -70.51076
+            ],
+            [
+              -35.99316,
+              -70.51076
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Hilo riparian a lo largo de drenaje (largo 488 m, ancho 40.0 m, NDVI 0.674, dist_caldera 8.92 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
+          "tipo_esperado": "GREENING",
+          "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
           "activo": true
         }
       ]
@@ -86,7 +1062,7 @@
         {
           "id": "rio_agrio_valle",
           "nombre": "Valle Rio Agrio",
-          "lat": -37.870,
+          "lat": -37.87,
           "lon": -71.155,
           "radio_m": 900,
           "descripcion": "Valle receptor de depositos acidos. Vegetacion sensible a cambios de pH.",
@@ -103,8 +1079,8 @@
         {
           "id": "flanco_norte",
           "nombre": "Flanco Norte (Nothofagus)",
-          "lat": -39.400,
-          "lon": -71.940,
+          "lat": -39.4,
+          "lon": -71.94,
           "radio_m": 1000,
           "descripcion": "Bosque Nothofagus en flanco norte. Muy sensible a deposicion acida.",
           "tipo_esperado": "BROWNING",

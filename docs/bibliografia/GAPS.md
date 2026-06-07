@@ -6,6 +6,15 @@
 
 ## 🔴 Prioridad ALTA (bloquean decisiones de diseño)
 
+- **🐛 BUG DE SIGNO GREENING/BROWNING — RESUELTO 2026-06-07.** El path ΔNDVI
+  (`vegstress_signal.classify_change`/`pct_matching_sign` + `change_detector.compute_delta`/
+  colormap) tenía el convenio **invertido**: marcaba ΔNDVI<0 (NDVI que BAJA) como GREENING.
+  Verificado contra datos crudos: Q9 NDVI ene=0.81 → abr=0.56 (senescencia) se reportaba
+  "GREENING CRITICAL". El path z-score (`ndvi_analyzer.py:406`, `dashboard_generator.py:61`,
+  `z<0 → BROWNING`) ya era correcto → los dos subsistemas se contradecían. **Fix**: ΔNDVI>0
+  = GREENING (ganancia de vigor), <0 = BROWNING. Tests de regresión añadidos. Impacto: el bug
+  invertía el mecanismo de CADA alerta (CO2/fertilización vs tefra/ácido), el corazón de Guinn.
+
 - **🚨 LAS AOIs DE LAGUNA DEL MAULE NO TIENEN VEGETACIÓN (descubierto 2026-06-07).**
   Al aplicar el filtro NDVI≥0.4 de Guinn 2024, las 4 AOIs dan **veg = 0-3%**: están sobre
   roca/nieve de caldera a ~2200 m, no sobre vegetación. → La alerta WARNING previa de Borde
@@ -33,6 +42,16 @@
     grandes; (3) extraer la vegetación riparia (hilos verdes NDVI≥0.4 visibles en el mapa
     `_aoi_candidatas.png` a lo largo de los drenajes); (4) re-correr change_detector sobre
     esas AOIs. El detector ya filtra NDVI<0.4 y reporta pct_coincide_esperado para señal localizada.
+  - **✅ IMPLEMENTADO 2026-06-07.** `riparian_finder.py` extrae los hilos verdes lineales
+    (NDVI 0.41-0.95 estable, ancho≤80 m, largo≥150 m) y traza su centerline como waypoints.
+    15 quebradas candidatas (Q1-Q15) volcadas a `aoi_config.json` como AOIs **tipo línea**
+    (motor nuevo `aoi_geometry.py`: polilínea + buffer 30 m = Guinn). Las 4 AOIs circulares
+    viejas se desactivaron (eran roca/nieve). Ahora las 15 quebradas SÍ tienen vegetación.
+    **HALLAZGO:** comparación misma-estación verano 2025 vs 2026 → **Q8 (+0.118) y Q9 (+0.110)
+    = GREENING WATCH rel=ALTA**, y son los 2 hilos más cercanos al sector de desgasificación
+    sur. El control otoño-vs-otoño los muestra estables → el greening no es artefacto. Es el
+    precursor de fertilización por CO2 (Guinn). **Pendiente confirmar con clima** (¿verano
+    2025-26 más lluvioso? correr climate_control sobre Q8/Q9) y con más fechas inter-anuales.
 
 - **✅ RESUELTO (conflicto greening/browning):** tras fichar PD-003/PD-006/PD-011, el efecto del
   CO2 resultó **NO monotónico — depende del flujo**: bajo/moderado → GREENING (fertilización,
@@ -51,8 +70,11 @@
   antecedente de 48 días (De Schutter PD-014) vía Open-Meteo (gratis). Probado en Sector Sur:
   el clima explicaba **34% de la varianza NDVI** → removido. **Pendiente**: (a) upgrade a CR2MET
   (autoritativo Chile, PD-012) — interfaz lista en `fetch_climate_cr2met()`; (b) cablear el NDVI
-  corregido al detector de alertas; (c) implementar la comparación inter-anual misma-estación
-  (ya hay datos: Feb-2025 vs Ene-2026).
+  corregido al detector de alertas.
+  - **✅ (c) RESUELTO 2026-06-07 — comparación inter-anual misma-estación.** El default de
+    `change_detector` ahora elige la misma estación del año anterior (~365 d, ±45 d) en vez de
+    ~90 d antes. Esto anula la senescencia estacional (que generaba falsos CRITICAL: el cambio
+    verano→otoño es fenología, no volcán). Para LdM el default pasó a otoño-25 vs otoño-26.
 - **Seminales de change-detection en paywall** (BFAST Verbesselt 2010/2012, CCDC Zhu 2014,
   LandTrendr Kennedy 2010). → Resolver: VPN SERNAGEOMIN o biblioteca.
 

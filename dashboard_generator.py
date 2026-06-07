@@ -517,7 +517,7 @@ function showDetail(name, defaultTab) {{
   if (d.maps&&d.maps.delta) {{
     const mc=document.createElement('div'); mc.className='map-img-container';
     const mh=document.createElement('div'); mh.className='map-img-header';
-    const ms=document.createElement('span'); ms.textContent='Mapa de cambio '+String.fromCharCode(0x394)+'NDVI (azul=greening, rojo=browning)';
+    const ms=document.createElement('span'); ms.textContent='Mapa de cambio '+String.fromCharCode(0x394)+'NDVI (verde=greening, marron/rojo=browning)';
     const ml=document.createElement('a'); ml.href=d.maps.delta_url; ml.target='_blank'; ml.textContent='Abrir';
     mh.appendChild(ms); mh.appendChild(ml); mc.appendChild(mh);
     const img=document.createElement('img'); img.src=d.maps.delta_url; img.alt='Delta NDVI '+name; mc.appendChild(img);
