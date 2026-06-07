@@ -25,6 +25,14 @@
     parches de borde como control y aceptar que LdM no es ideal para señal vegetal directa.
     Candidatas en `datos/Laguna_del_Maule/aoi_candidatas.json` + mapa
     `docs/maps/Laguna_del_Maule_aoi_candidatas.png`.
+  - **✅ DECISIÓN DE CAMPO (Nicolás, 2026-06-07): las emisiones de CO2 se concentran en las
+    QUEBRADAS.** ⇒ Próxima sesión: crear AOIs sobre la **vegetación riparia de las quebradas**
+    (no parches de borde). Coincide con Guinn 2024 (gas en 30 m de la estructura). TAREA:
+    (1) identificar las quebradas con desgasificación conocida (coords de Nicolás o trazas de
+    drenaje del DEM); (2) definir AOIs lineales/estrechas siguiendo la quebrada, no círculos
+    grandes; (3) extraer la vegetación riparia (hilos verdes NDVI≥0.4 visibles en el mapa
+    `_aoi_candidatas.png` a lo largo de los drenajes); (4) re-correr change_detector sobre
+    esas AOIs. El detector ya filtra NDVI<0.4 y reporta pct_coincide_esperado para señal localizada.
 
 - **✅ RESUELTO (conflicto greening/browning):** tras fichar PD-003/PD-006/PD-011, el efecto del
   CO2 resultó **NO monotónico — depende del flujo**: bajo/moderado → GREENING (fertilización,
