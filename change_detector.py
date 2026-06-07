@@ -644,9 +644,12 @@ def analyze_timeseries(volcan_name, aois_def):
     if bbox is None or len(arrays) < 4:
         return None
 
+    umbrales = load_config().get('umbrales_globales', {})
+    ndvi_min = umbrales.get('ndvi_min_valido', 0.4)
     out = {}
     for aoi in aois_def:
-        # serie de NDVI medio del AOI por fecha (usando la fecha como referencia de shape)
+        # serie de NDVI medio del AOI por fecha, SOLO sobre vegetación (NDVI>=ndvi_min,
+        # Guinn 2024 L882): una serie sobre roca/nieve no es estrés vegetal.
         serie = []
         fechas_ok = []
         for f in dates:
@@ -655,7 +658,7 @@ def analyze_timeseries(volcan_name, aois_def):
             arr = arrays[f]
             mask, _ = aoi_mask(aoi, bbox, arr.shape)
             vals = arr[mask]
-            vals = vals[~np.isnan(vals)]
+            vals = vals[(~np.isnan(vals)) & (vals >= ndvi_min)]
             if len(vals) >= 20:
                 serie.append(float(np.mean(vals)))
                 fechas_ok.append(f)
