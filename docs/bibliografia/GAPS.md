@@ -111,6 +111,24 @@
 - **Seminales de change-detection en paywall** (BFAST Verbesselt 2010/2012, CCDC Zhu 2014,
   LandTrendr Kennedy 2010). → Resolver: VPN SERNAGEOMIN o biblioteca.
 
+## 🟢 Cobertura comprehensiva de vegetación (2026-06-13)
+
+- **Escaneo de red ancha + tendencia plurianual de TODA la vegetación** (no solo 15 hilos).
+  `vegetation_scan.py` (par inter-anual mismo-mes, clima descontado espacialmente vía mediana
+  de cuenca) y `vegetation_trends.py` (tendencia de 6 febreros 2021-2026 por componente, clima
+  de cuenca restado año a año). Criterio veg: NDVI 0.41-0.95 en ≥70% de fechas (incluye
+  caducifolias; ~1.38% de la escena, 250 componentes ≥0.3 ha).
+  - **Tendencia de cuenca (clima): plana (-0.0017 NDVI/año)** → no hay deriva regional grande.
+  - **18 de 250 componentes "robustos"** (|pend. residual|≥0.010 NDVI/año Y r²≥0.6): 10 greening,
+    8 browning. Clústeres: **greening sostenido en el SO (~-36.127, -70.58/-70.59; el más fuerte
+    +0.025/año r²=0.87, y un parche de 8.85 ha +0.014 r²=0.61)** — coincide con la zona de Q9 — y
+    un clúster mixto en el NE (~-36.00, -70.40). **CAVEAT estadístico:** con 6 puntos y 250
+    componentes, r²≥0.6 ocurre por azar en parte (18/250=7%); son CANDIDATOS a inspección de
+    campo, ponderados por dónde Nicolás sabe que hay desgasificación, no detecciones confirmadas.
+  - **Acción de campo pendiente:** contrastar el clúster SO (-36.127, -70.58) y el NE
+    (-36.00, -70.40) con desgasificación conocida. Mapas: `docs/maps/Laguna_del_Maule_vegetation_scan.png`
+    y `_vegetation_trends.png`; datos en `datos/Laguna_del_Maule/vegetation_{scan,trends}.json`.
+
 ## 🟡 Prioridad MEDIA (mejoran rigor)
 
 - **⚠️ La 2ª derivada (Guinn) aliasa estacionalidad con muestreo multi-estación (visto
