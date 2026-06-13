@@ -71,6 +71,20 @@
     geográficamente a quebradas de desgasificación conocida (el 1er waypoint de Q9 está al
     OESTE, lon -70.582, no al sur); (b) datos de flujo CO2 de campo en el centroide de Q8;
     (c) más fechas inter-anuales de verano (BLOQUEADO: credenciales CDSE vacías en .env).
+  - **🧊 RESULTADO DEFINITIVO 2026-06-13 (serie de 6 febreros, misma estación) — NO HAY
+    PRECURSOR DE GREENING EN Q8.** Con credenciales CDSE se bajaron los febreros 2021-2024 +
+    2026-02-16 (+ el 2025-02-18 ya existente) = serie inter-anual mismo-mes 2021-2026
+    (analisis_interanual_febrero.py, figura docs/maps/Q8_interanual_febrero.png). NDVI de Q8 por
+    año: 0.627, 0.608, 0.619, 0.632, 0.574, 0.577 → **pendiente -0.010/año (plano/leve declive),
+    r²(año)=0.53, r²(NDVI~precip)=0.06.** Q8 NO enverdece; si acaso declina levemente y está
+    DESACOPLADA de las oscilaciones climáticas regionales que sí mueven juntas a Q9 y los controles
+    Q3/Q6. **El "greening +0.118" reportado antes era un ARTEFACTO FENOLÓGICO**: comparaba
+    2025-02-18 (mediados de feb, NDVI 0.574) contra 2026-01-11 (mediados de ene, NDVI 0.663), y el
+    NDVI cae naturalmente de enero a febrero al avanzar el verano. Comparando feb-vs-feb (0.574 →
+    0.577) Q8 está plano. **Conclusión: sin evidencia de fertilización por CO2 en la vegetación
+    riparia de LdM con los datos actuales.** Refuerza por qué la comparación DEBE ser mismo-mes
+    (lección ya cableada al default del detector). Q9 muestra una tendencia +0.017/año pero ruidosa
+    (r²=0.32) e indistinguible del control Q3 (+0.014/año) → ruido climático, no señal.
 
 - **✅ RESUELTO (conflicto greening/browning):** tras fichar PD-003/PD-006/PD-011, el efecto del
   CO2 resultó **NO monotónico — depende del flujo**: bajo/moderado → GREENING (fertilización,
@@ -98,6 +112,14 @@
   LandTrendr Kennedy 2010). → Resolver: VPN SERNAGEOMIN o biblioteca.
 
 ## 🟡 Prioridad MEDIA (mejoran rigor)
+
+- **⚠️ La 2ª derivada (Guinn) aliasa estacionalidad con muestreo multi-estación (visto
+  2026-06-13).** Al ampliar la serie LdM a 10 fechas de distintas estaciones (febreros +
+  otoño + dic + ene), `analyze_timeseries` reportó 20 "eventos de aceleración" que son
+  FENOLOGÍA, no recarga de magma. La 2ª derivada de Guinn 2024 asume muestreo regular /
+  misma fenofase. → **Acción**: restringir la serie de 2ª derivada a una sola estación
+  (p.ej. solo febreros) o deseasonalizar antes de derivar. Hasta entonces, los "spikes"
+  del dashboard con datos multi-estación NO son interpretables como volcánicos.
 
 - **Farrar 1995 (Mammoth, seminal CO2-vegetación)** — paywall Nature. → VPN.
 - **Houlié 2006 (NDVI-dikes seminal)** — paywall Elsevier. → VPN / preprint.
