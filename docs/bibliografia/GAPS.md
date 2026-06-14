@@ -134,7 +134,15 @@
     (área_desgasificacion.py) reemplazan a las Q1-Q15 especulativas (desactivadas). Mapa zoom:
     `docs/maps/Laguna_del_Maule_area_gas.png`. Datos: `datos/Laguna_del_Maule/aois_area_gas.json`.
   - **PENDIENTE de campo:** ¿hay OTRAS quebradas de desgasificación además de esta área
-    principal? ¿conviene bajar SIF (TROPOMI/OCO-3) o red-edge (S2 B05-B07) para esta zona?
+    principal? ¿conviene bajar SIF (TROPOMI/OCO-3) para esta zona?
+  - **🔴 RED-EDGE (NDRE) TAMBIÉN NEGATIVO 2026-06-13.** `rededge_gas.py` bajó B05 (705 nm) y
+    computó NDRE=(B08−B05)/(B08+B05) a 10 m sobre el área de gas, 6 febreros 2021-2026. NDRE de
+    la vegetación del área sigue EN LOCKSTEP al NDVI y al fondo climático del tile (baja 2022,
+    sube 2024, baja 2026). Pendiente residual NDRE +0.0042/año (r²=0.06) ≈ NDVI +0.0033 (r²=0.02):
+    ninguna tendencia robusta. **El red-edge, más sensible al estrés temprano (Eitel 2006), tampoco
+    capta firma de desgasificación.** ⇒ No es saturación de NDVI: simplemente NO hay señal vegetal
+    detectable con S2 (NDVI ni red-edge) en esta zona. Próxima palanca real = SIF fino (no NDVI/NDRE)
+    o validación de flujo CO2 de campo. Figura: `docs/maps/Laguna_del_Maule_rededge_gas.png`.
 
 ## 🟢 Cobertura comprehensiva de vegetación (2026-06-13)
 
