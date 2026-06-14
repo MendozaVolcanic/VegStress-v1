@@ -119,20 +119,41 @@
 - **Caveat**: ventaja NO universal (en sitio seco DHS, SIF peor que NDVI). **GOSIF = 0.05° (~5 km)
   → demasiado grueso para AOIs volcánicas.** SIF satelital fino aún no disponible para nuestro caso.
 
-### Eitel — Red-edge antes que NDVI ⚠️ PDF EQUIVOCADO (re-descargar)
-- **PDF descargado NO es Eitel red-edge**: el DOI `10.1093/jxb/erq201` resuelve a un review de
-  fenotipado (Berger, Parent & Tester 2010), no al paper red-edge. → **NO hay evidencia
-  cuantificada de lead-time red-edge todavía** (ver GAPS.md).
-- Paper correcto a conseguir: **Eitel, Gessler, Smith & Robberecht 2006**, *Forest Ecol. Manag.*
-  229:170-182.
+### Gao 2025 — nSIF responde antes que VIs/NDVI (TGRS) ⭐ DESCARGADO + LEÍDO
+- **PDF**: `Gao_2025_nSIF_NDVI_TGRS.pdf` (green-OA accepted manuscript, Lirias/KU Leuven, 8.99 MB) ·
+  DOI `10.1109/TGRS.2025.3561216` · ficha `PD-019`
+- **SIF NORMALIZADA (SIFn) muestra el descenso MÁS TEMPRANO** ante sequía, antes que SIF cruda,
+  **VIs (incl. NDVI)** y ΦF. En las 2 primeras semanas de la sequía 2019 (North China Plain) SIFn
+  cayó **8.2 / 7.0 / 12.5 / 8.2 %** en las 4 subdivisiones.
+- **NDVI limitado por saturación y respuesta retardada a la lluvia**; muestreo **biquincenal detecta
+  antes que mensual**. NIRv/ΦF correlacionan débil con SIF al inicio (R 0.16-0.32), fuerte al final
+  (R 0.83-0.87). **Caveat**: estrés hídrico en cultivos NCP (no CO2 volcánico); SIF satelital grueso.
+
+### Eitel 2006 — Red-edge antes que NDVI ⏳ PAYWALL (DOI corregido)
+- **Paper correcto** (el `Eitel_2010_rededge_drought.pdf` descargado es Berger/Parent/Tester 2010,
+  DOI 10.1093/jxb/erq201 = review de fenotipado — NO es Eitel red-edge; ver PD-007).
+- **Eitel, Gessler, Smith & Robberecht 2006**, *"Suitability of existing and novel spectral indices
+  to remotely detect water stress in **Populus spp.**"*, *Forest Ecol. Manag.* 229:170-182.
+  **DOI REAL confirmado (Crossref): `10.1016/j.foreco.2006.03.027`.** (Título es *Populus*, no
+  *Pinus*.) **NO OA → paywall Elsevier** (Unpaywall/OpenAlex closed). → VPN/biblioteca. Ficha `PEND-05`.
+- **El lead-time cuantificado de red-edge vs NDVI sigue SIN evidencia** hasta leer este PDF.
+
+### Parazoo 2025 — SIF como alerta temprana de flash-drought (GRL) ⏳ gold-OA tras Cloudflare
+- **Parazoo & Fuchs 2025**, *Geophys. Res. Lett.* 52 · DOI `10.1029/2025GL119408` · ficha `PEND-04`
+- **Gold-OA (CC BY-NC-ND)** pero el PDF está tras Cloudflare en Wiley/AGU (curl no pasa). → bajar
+  vía navegador real (no requiere VPN). [PENDIENTE DE LECTURA — no transcribir hallazgos aún].
 
 ### Köhler/Magney et al. 2018 — SIF global con TROPOMI
 - **PDF**: ⏳ pendiente (lector Wiley no soltó limpio) · DOI `10.1029/2018GL079031`
 
-> **Estado de la hipótesis central** (SIF/red-edge preceden a NDVI):
-> **SIF VALIDADO (~1 mes de lead-time)** pero sin sensor fino operativo. **Red-edge AÚN SIN
-> VALIDAR** por error de descarga. Papers TGRS 2025 (`10.1109/TGRS.2025.3561216`) y
-> GRL 2025 (`10.1029/2025GL119408`) lo afirman directamente — **conseguir vía IEEE/AGU**.
+> **Estado de la hipótesis central** (SIF/red-edge preceden a NDVI) — act. 2026-06-13:
+> **SIF VALIDADO por DOS papers independientes**: PD-018 (Wang 2024, ~1 mes de lead-time) y
+> **PD-019 (Gao 2025 TGRS, SIFn descendiendo antes que VIs/NDVI)** — ambos descargados y leídos;
+> persiste la limitación de resolución del SIF satelital (grueso para AOIs de quebrada).
+> **Red-edge AÚN SIN VALIDAR**: el paper clave (Eitel 2006, DOI real `10.1016/j.foreco.2006.03.027`,
+> *Populus*) está en **paywall Elsevier** → PEND-05, conseguir vía VPN/biblioteca. El tercer paper
+> SIF (Parazoo 2025 GRL `10.1029/2025GL119408`) es gold-OA pero bloqueado por Cloudflare → PEND-04,
+> bajar vía navegador.
 
 ---
 

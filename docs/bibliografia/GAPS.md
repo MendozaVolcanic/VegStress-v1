@@ -91,10 +91,15 @@
   Guinn); alto → BROWNING/kill zone (asfixia, Cawse-Nicholson NDVI 0.27→0.10 @ 200→800 g·m⁻²·d⁻¹;
   Mammoth 200 000-950 000 ppm). El detector ya distingue ambos signos (implementado). Pendiente:
   usar magnitud + contexto térmico/SO2 para separar fertilización de asfixia.
-- **Eitel red-edge: PDF EQUIVOCADO.** `Eitel_2010_rededge_drought.pdf` es en realidad
-  Berger/Parent/Tester 2010 (DOI 10.1093/jxb/erq201 = review de fenotipado). → **El lead-time de
-  red-edge vs NDVI sigue SIN evidencia cuantificada.** Descargar el correcto:
-  **Eitel, Gessler, Smith & Robberecht 2006**, Forest Ecol. Manag. 229:170-182.
+- **Eitel red-edge: PDF EQUIVOCADO + DOI corregido (2026-06-13).** `Eitel_2010_rededge_drought.pdf`
+  es en realidad Berger/Parent/Tester 2010 (DOI 10.1093/jxb/erq201 = review de fenotipado).
+  → **El lead-time de red-edge vs NDVI sigue SIN evidencia cuantificada.** El paper correcto es
+  **Eitel, Gessler, Smith & Robberecht 2006** — DOI REAL confirmado vía Crossref:
+  **`10.1016/j.foreco.2006.03.027`**, *Forest Ecol. Manag.* 229:170-182, julio 2006. **OJO**: el
+  título es *"...water stress in **Populus spp.**"* (NO "Pinus" como decía el pedido). **NO es OA**
+  (Unpaywall is_oa=False, OpenAlex closed, sin repositorio) → **paywall Elsevier, conseguir vía VPN
+  SERNAGEOMIN o biblioteca**. Ficha: `fichas/PEND-05_Eitel_2006_rededge_waterstress.md` [PENDIENTE
+  DE LECTURA].
 - **Umbrales ΔNDVI sin cita.** WATCH/WARNING/CRITICAL (0.10/0.15/0.25) siguen sin respaldo.
   Guinn no usa umbrales absolutos (usa 2ª derivada). → Decidir: ¿migramos a 2ª derivada o
   mantenemos umbral pero citado? Pendiente leer más casos (iScience PD-003, papers SIF 2025).
@@ -176,8 +181,16 @@
 - **Houlié 2006 (NDVI-dikes seminal)** — paywall Elsevier. → VPN / preprint.
 - **Magney 2019 PNAS + Magney 2018 GRL (SIF)** — visores JS no soltaron PDF limpio.
   → Reintentar vía navegador o europepmc.
-- **Papers SIF-antes-que-NDVI 2025** (TGRS `10.1109/TGRS.2025.3561216`,
-  GRL `10.1029/2025GL119408`) — validan hipótesis central. Paywall. → IEEE/AGU.
+- **Papers SIF-antes-que-NDVI 2025** (validan hipótesis central) — estado 2026-06-13:
+  - ✅ **TGRS `10.1109/TGRS.2025.3561216`** = Gao et al. 2025, *"Normalized Solar-Induced Fluorescence
+    Responds Earlier Than Vegetation Indices to the 2019 North China Plain Drought"*, IEEE TGRS
+    63:1-13. **DESCARGADO** (green-OA accepted manuscript desde Lirias/KU Leuven, 8.99 MB) y
+    LEÍDO → ficha `PD-019`. Hallazgo: SIFn desciende antes que VIs/NDVI; cae 8.2/7.0/12.5/8.2 %
+    en las 2 primeras semanas de sequía.
+  - ⏳ **GRL `10.1029/2025GL119408`** = Parazoo & Fuchs 2025, *"Solar Induced Fluorescence as an
+    Application Ready Early Warning Indicator of Flash Drought"*, Geophys. Res. Lett. 52. Es
+    **gold-OA (CC BY-NC-ND)** pero el PDF está tras **Cloudflare** en Wiley/AGU (curl no pasa el
+    challenge) → bajar vía **navegador real** (no requiere VPN). Ficha `PEND-04` [PENDIENTE DE LECTURA].
 - **Lead-time real de red-edge/SIF vs NDVI** sin cuantificar para nuestro bioma. → fichar
   Eitel 2010 (PD-007) + conseguir papers SIF 2025.
 

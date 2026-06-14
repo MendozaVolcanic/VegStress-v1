@@ -30,12 +30,23 @@
 | PD-016 | `Zamorano_2011_Araucaria_discriminacion.pdf` ⚠️ | 6-especies | ✅ | ✅ (autor=Ojeda) |
 | PD-017 | `Zamorano_2015_Araucaria_fragmentation.pdf` | 6-especies | ⬜ | ⬜ |
 | PD-018 | `SIF_NDVI_2024_comparison.pdf` | 4-SIF ⭐ | ✅ | ✅ |
+| PD-019 | `Gao_2025_nSIF_NDVI_TGRS.pdf` | 4-SIF ⭐ | ✅ | ✅ |
 | PEND-01 | Farrar 1995 Mammoth (paywall) | 1-seminal | ⬜ | ⬜ |
 | PEND-02 | Verbesselt 2010 BFAST (paywall) | 2-seminal | ⬜ | ⬜ |
 | PEND-03 | Zhu 2014 CCDC (paywall) | 2-seminal | ⬜ | ⬜ |
+| PEND-04 | Parazoo 2025 SIF flash-drought GRL (gold-OA, Cloudflare) | 4-SIF ⭐ | ✅ | ⬜ |
+| PEND-05 | Eitel 2006 red-edge water-stress FEM (paywall Elsevier) | 4-red-edge ⭐ | ✅ | ⬜ |
 
-**Procesadas: 15/18.** Pendientes: PD-005 (Bogue), PD-013 (Cordón Caulle NHESS),
-PD-017 (Zamorano 2015) — son contexto, baja prioridad.
+**Procesadas: 16/19 PDFs locales.** Pendientes de fichar: PD-005 (Bogue), PD-013 (Cordón Caulle
+NHESS), PD-017 (Zamorano 2015) — son contexto, baja prioridad.
+
+**Papers del pivote NDVI→red-edge/SIF (sesión 2026-06-13):**
+- ✅ **PD-019 Gao 2025 (TGRS)** — DESCARGADO (green-OA Lirias/KU Leuven, 8.99 MB) y leído. SIFn
+  desciende antes que VIs/NDVI en la sequía 2019 NCP.
+- ⏳ **PEND-04 Parazoo 2025 (GRL)** — gold-OA CC BY-NC-ND pero bloqueado por Cloudflare en Wiley/AGU;
+  bajar vía navegador real.
+- ⏳ **PEND-05 Eitel 2006 (Forest Ecol. Manag.)** — paywall Elsevier sin OA; vía VPN/biblioteca.
+  DOI real `10.1016/j.foreco.2006.03.027` (corrige el erróneo `10.1093/jxb/erq201`); especie **Populus**, no Pinus.
 
 ⚠️ **Erratas de nombre de archivo detectadas** (corregir cita, no el archivo):
 - PD-007 `Eitel_2010_rededge` → el PDF es en realidad **Berger/Parent/Tester 2010** (review de
