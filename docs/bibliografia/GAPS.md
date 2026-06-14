@@ -148,6 +148,22 @@
     capta firma de desgasificación.** ⇒ No es saturación de NDVI: simplemente NO hay señal vegetal
     detectable con S2 (NDVI ni red-edge) en esta zona. Próxima palanca real = SIF fino (no NDVI/NDRE)
     o validación de flujo CO2 de campo. Figura: `docs/maps/Laguna_del_Maule_rededge_gas.png`.
+  - **🔬 PÍXEL A PÍXEL 2026-06-13 (corrección de campo: la afectación son SPOTS chicos en las
+    quebradas, no todo el polígono).** `gas_pixel_trends.py`: tendencia NDVI por píxel (6 febreros)
+    dentro del polígono, sin promediar. Halló **3 spots chicos con declive sostenido** (el mayor:
+    7 px/0.07 ha, NDVI 0.56→0.21, slope −0.058/año, r²=0.62) y CERO greening. Parecía la zona de
+    muerte por CO2 alto. **PERO el control lo rechaza:** la tasa de píxeles en declive es **2.5%
+    DENTRO del área de gas vs 11.6% FUERA** (resto de la escena) → el declive es **regional (sequía
+    2021-2026), y el área de gas declina MENOS que el promedio**, no más. Encroachment del lago
+    descartado (NDVI mín 0.07-0.18, nunca agua). **Conclusión: ni a escala de píxel hay declive
+    ANÓMALO atribuible al gas.** Sentinel-2 NDVI/red-edge agotado en TODAS las escalas (polígono,
+    componente, píxel) con controles climáticos. Limitante = resolución (10 m no aísla spots <30 m)
+    y/o sensor. Figura: `docs/maps/Laguna_del_Maule_gas_pixel_trends.png`.
+  - **PRÓXIMAS PALANCAS REALES (no más NDVI S2):** (a) **coords EXACTAS de los puntos de venteo**
+    de Nicolás → comparación pareada DENTRO de cada quebrada (píxel-venteo vs píxel-control aguas
+    arriba/abajo, misma quebrada/clima); (b) **imagen de mayor resolución** (PlanetScope 3 m, dron
+    multiespectral) que sí resuelva spots <30 m; (c) **flujo CO2 de campo** sobre los píxeles;
+    (d) fijar el baseline de 6 años para detectar cambios FUTUROS si la desgasificación se intensifica.
 
 ## 🟢 Cobertura comprehensiva de vegetación (2026-06-13)
 
