@@ -111,6 +111,31 @@
 - **Seminales de change-detection en paywall** (BFAST Verbesselt 2010/2012, CCDC Zhu 2014,
   LandTrendr Kennedy 2010). → Resolver: VPN SERNAGEOMIN o biblioteca.
 
+## 🎯 ANCLAJE DE CAMPO — área de desgasificación real (2026-06-13)
+
+- **Nicolás aportó el polígono del área de desgasificación PRINCIPAL** (area.kmz →
+  `datos/area_desgasificacion.json`): centro **−36.089, −70.549**, ~2.12 km², orilla
+  centro-oeste del lago. Esto da por fin el anclaje de campo que faltaba.
+  - **Rechaza los candidatos data-driven previos:** los clústeres "robustos" que había
+    marcado (SO −36.127/−70.58 y NE −36.00/−70.40) **NO caen en el área de gas** → eran
+    ruido estadístico, no señal. (Valor de la verdad de campo.)
+  - **Dentro del área de gas la vegetación es ESCASA:** solo **4.25 ha vegetadas (2% del
+    polígono)**, en 8 componentes chicos (0.19-1.02 ha) sobre un drenaje del borde SO.
+  - **NINGÚN componente muestra tendencia sostenida:** todos r²≤0.20 (febreros 2021-2026);
+    sus series siguen casi exactas la mediana climática de la cuenca (0.67,0.54,0.57,0.67,
+    0.62,0.59) → solo clima, sin residuo volcánico. **No hay firma espectral NDVI de la
+    desgasificación detectable con Sentinel-2 a esta resolución/sensibilidad.**
+  - **Lectura:** o (a) NDVI no es suficientemente sensible al CO2 difuso aquí (→ probar SIF
+    /red-edge, que preceden y son más sensibles), o (b) la vegetación es rala por el ambiente
+    de altura/gas y lo que queda no responde de forma detectable. Es un **resultado negativo
+    sólido y publicable** (el gap de literatura: respuesta espectral de Nothofagus/Araucaria
+    a desgasificación difusa, no documentada).
+  - **AOIs de monitoreo ahora ancladas al gas:** 8 AOIs `gas_quebrada_*`/`gas_parche_*`
+    (área_desgasificacion.py) reemplazan a las Q1-Q15 especulativas (desactivadas). Mapa zoom:
+    `docs/maps/Laguna_del_Maule_area_gas.png`. Datos: `datos/Laguna_del_Maule/aois_area_gas.json`.
+  - **PENDIENTE de campo:** ¿hay OTRAS quebradas de desgasificación además de esta área
+    principal? ¿conviene bajar SIF (TROPOMI/OCO-3) o red-edge (S2 B05-B07) para esta zona?
+
 ## 🟢 Cobertura comprehensiva de vegetación (2026-06-13)
 
 - **Escaneo de red ancha + tendencia plurianual de TODA la vegetación** (no solo 15 hilos).

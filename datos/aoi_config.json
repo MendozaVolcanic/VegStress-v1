@@ -188,7 +188,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q2",
@@ -264,7 +265,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q3",
@@ -360,7 +362,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q4",
@@ -440,7 +443,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q5",
@@ -504,7 +508,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q6",
@@ -588,7 +593,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q7",
@@ -640,7 +646,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q8",
@@ -704,7 +711,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q9",
@@ -760,7 +768,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q10",
@@ -816,7 +825,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q11",
@@ -868,7 +878,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q12",
@@ -912,7 +923,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q13",
@@ -964,7 +976,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q14",
@@ -1004,7 +1017,8 @@
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
           "umbral_delta_abs": 0.1,
-          "activo": true
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
         },
         {
           "id": "quebrada_Q15",
@@ -1039,6 +1053,170 @@
           "descripcion": "Hilo riparian a lo largo de drenaje (largo 488 m, ancho 40.0 m, NDVI 0.674, dist_caldera 8.92 km). Candidata a quebrada de desgasificacion CO2 (decision de campo).",
           "tipo_esperado": "GREENING",
           "_nota_tipo": "Hipotesis: CO2 difuso -> fertilizacion (GREENING) sensu Guinn 2024 PD-001. El signo discrimina mecanismo; magnitud alta podria indicar asfixia (BROWNING).",
+          "umbral_delta_abs": 0.1,
+          "activo": false,
+          "_nota_desactivada": "Desactivada 2026-06-13: candidata data-driven sin anclaje de campo; el analisis plurianual no hallo senal robusta. Reemplazada por AOIs ancladas al area de desgasificacion real (gas_*)."
+        },
+        {
+          "id": "gas_quebrada_1",
+          "nombre": "Gas — quebrada 1",
+          "waypoints": [
+            [
+              -36.08568,
+              -70.54721
+            ],
+            [
+              -36.08623,
+              -70.5471
+            ],
+            [
+              -36.08659,
+              -70.54699
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Veg riparia DENTRO del area de desgasificacion principal (campo). area 0.60 ha.",
+          "tipo_esperado": "NINGUNO",
+          "_nota_tipo": "Area de gas principal: flujo posiblemente alto -> Guinn predice BROWNING (asfixia) si es alto, GREENING si bajo. Dejar NINGUNO y leer el signo observado.",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "gas_quebrada_2",
+          "nombre": "Gas — quebrada 2",
+          "waypoints": [
+            [
+              -36.08704,
+              -70.54821
+            ],
+            [
+              -36.08749,
+              -70.54777
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Veg riparia DENTRO del area de desgasificacion principal (campo). area 0.30 ha.",
+          "tipo_esperado": "NINGUNO",
+          "_nota_tipo": "Area de gas principal: flujo posiblemente alto -> Guinn predice BROWNING (asfixia) si es alto, GREENING si bajo. Dejar NINGUNO y leer el signo observado.",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "gas_quebrada_3",
+          "nombre": "Gas — quebrada 3",
+          "waypoints": [
+            [
+              -36.08821,
+              -70.54844
+            ],
+            [
+              -36.08902,
+              -70.54899
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Veg riparia DENTRO del area de desgasificacion principal (campo). area 0.23 ha.",
+          "tipo_esperado": "NINGUNO",
+          "_nota_tipo": "Area de gas principal: flujo posiblemente alto -> Guinn predice BROWNING (asfixia) si es alto, GREENING si bajo. Dejar NINGUNO y leer el signo observado.",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "gas_quebrada_4",
+          "nombre": "Gas — quebrada 4",
+          "waypoints": [
+            [
+              -36.08893,
+              -70.54933
+            ],
+            [
+              -36.08965,
+              -70.55011
+            ],
+            [
+              -36.08956,
+              -70.55033
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Veg riparia DENTRO del area de desgasificacion principal (campo). area 0.44 ha.",
+          "tipo_esperado": "NINGUNO",
+          "_nota_tipo": "Area de gas principal: flujo posiblemente alto -> Guinn predice BROWNING (asfixia) si es alto, GREENING si bajo. Dejar NINGUNO y leer el signo observado.",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "gas_quebrada_5",
+          "nombre": "Gas — quebrada 5",
+          "waypoints": [
+            [
+              -36.09316,
+              -70.55145
+            ],
+            [
+              -36.09397,
+              -70.55111
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Veg riparia DENTRO del area de desgasificacion principal (campo). area 0.23 ha.",
+          "tipo_esperado": "NINGUNO",
+          "_nota_tipo": "Area de gas principal: flujo posiblemente alto -> Guinn predice BROWNING (asfixia) si es alto, GREENING si bajo. Dejar NINGUNO y leer el signo observado.",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "gas_quebrada_6",
+          "nombre": "Gas — quebrada 6",
+          "waypoints": [
+            [
+              -36.09388,
+              -70.55367
+            ],
+            [
+              -36.09406,
+              -70.55345
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Veg riparia DENTRO del area de desgasificacion principal (campo). area 0.19 ha.",
+          "tipo_esperado": "NINGUNO",
+          "_nota_tipo": "Area de gas principal: flujo posiblemente alto -> Guinn predice BROWNING (asfixia) si es alto, GREENING si bajo. Dejar NINGUNO y leer el signo observado.",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "gas_quebrada_7",
+          "nombre": "Gas — quebrada 7",
+          "waypoints": [
+            [
+              -36.09415,
+              -70.551
+            ],
+            [
+              -36.0946,
+              -70.55044
+            ],
+            [
+              -36.09487,
+              -70.55022
+            ]
+          ],
+          "buffer_m": 30,
+          "descripcion": "Veg riparia DENTRO del area de desgasificacion principal (campo). area 0.45 ha.",
+          "tipo_esperado": "NINGUNO",
+          "_nota_tipo": "Area de gas principal: flujo posiblemente alto -> Guinn predice BROWNING (asfixia) si es alto, GREENING si bajo. Dejar NINGUNO y leer el signo observado.",
+          "umbral_delta_abs": 0.1,
+          "activo": true
+        },
+        {
+          "id": "gas_parche_8",
+          "nombre": "Gas — parche 8",
+          "lat": -36.09559,
+          "lon": -70.55469,
+          "radio_m": 60,
+          "descripcion": "Veg DENTRO del area de desgasificacion principal (campo). area 1.02 ha.",
+          "tipo_esperado": "NINGUNO",
           "umbral_delta_abs": 0.1,
           "activo": true
         }
