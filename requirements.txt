@@ -5,3 +5,10 @@ Pillow
 python-dotenv
 tifffile
 scipy
+# scikit-image: esqueletos/rasterizado de lineas — aoi_geometry (que importa change_detector),
+# riparian_finder, vegetation_scan, vegetation_trends, area_desgasificacion.
+scikit-image
+# rasterio: lectura georreferenciada de ortomosaicos de dron — drone_vegindex y su test.
+rasterio
+# pytest: la suite corre en CI (guarda el bug de signo GREENING/BROWNING, entre otros).
+pytest

@@ -1,5 +1,13 @@
 name: VegStress — NDVI Volcanico Chile
 
+# NOTA (2026-08-09, auditoria): este workflow reportaba `success` durante 7 corridas
+# seguidas (6-jul a 1-ago) SIN producir un solo dato, porque el secret SH_CLIENT_SECRET
+# no existe en el repo y los errores se tragaban con `|| echo` y `|| true`. Un secret
+# ausente se resuelve a string VACIO, no a error. Ahora el workflow falla fuerte:
+#   1) preflight: verifica credenciales y autentica ANTES de trabajar;
+#   2) no se traga los errores: si TODOS los volcanes fallan, el job falla;
+#   3) el push no se silencia.
+
 on:
   schedule:
     # Cada 5 dias a las 14:00 UTC (despues de sobrevuelo Sentinel-2)
@@ -19,6 +27,12 @@ jobs:
   ndvi-analysis:
     runs-on: ubuntu-latest
 
+    # El token por defecto del repo es de solo lectura. Como el push ya no se
+    # silencia con `|| true`, sin este permiso el job fallaria en el ultimo paso
+    # incluso en una corrida perfecta.
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -30,6 +44,44 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # La suite protege la logica cientifica (p.ej. el convenio de signo
+      # GREENING/BROWNING, que ya se invirtio una vez e invalidaba cada alerta).
+      # Corre ANTES de gastar cuota satelital.
+      - name: Tests
+        run: python -m pytest tests/ -q
+
+      # ── Guardia anti-zombie: sin credenciales validas, cortar YA con mensaje claro ──
+      - name: Preflight — verificar credenciales CDSE
+        env:
+          SH_CLIENT_ID: ${{ secrets.SH_CLIENT_ID }}
+          SH_CLIENT_SECRET: ${{ secrets.SH_CLIENT_SECRET }}
+        run: |
+          set -euo pipefail
+          MISSING=0
+          if [ -z "${SH_CLIENT_ID:-}" ]; then
+            echo "::error::Falta el secret SH_CLIENT_ID en el repositorio."; MISSING=1
+          fi
+          if [ -z "${SH_CLIENT_SECRET:-}" ]; then
+            echo "::error::Falta el secret SH_CLIENT_SECRET en el repositorio. \
+          Un secret ausente se resuelve a string vacio: sin esta guardia el workflow \
+          reportaria 'success' sin descargar nada (pipeline zombie)."; MISSING=1
+          fi
+          if [ "$MISSING" -ne 0 ]; then
+            echo "Configurar con: gh secret set SH_CLIENT_SECRET -R \$GITHUB_REPOSITORY"
+            exit 1
+          fi
+          # Autenticar de verdad contra CDSE (no alcanza con que la variable exista)
+          HTTP=$(curl -s -o /tmp/tok.json -w '%{http_code}' \
+            -d 'grant_type=client_credentials' \
+            --data-urlencode "client_id=${SH_CLIENT_ID}" \
+            --data-urlencode "client_secret=${SH_CLIENT_SECRET}" \
+            'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token')
+          if [ "$HTTP" != "200" ]; then
+            echo "::error::Autenticacion CDSE fallida (HTTP $HTTP). Credenciales invalidas o expiradas."
+            exit 1
+          fi
+          echo "Preflight OK: credenciales presentes y CDSE autentica (HTTP 200)."
+
       - name: Run NDVI analysis — todos los volcanes
         if: ${{ github.event.inputs.volcan == 'todos' || github.event.inputs.volcan == '' || github.event_name == 'schedule' }}
         env:
@@ -37,12 +89,24 @@ jobs:
           SH_CLIENT_SECRET: ${{ secrets.SH_CLIENT_SECRET }}
         run: |
           MESES="${{ github.event.inputs.meses || '6' }}"
+          OK=0; FAIL=0
           for VOLCAN in "Villarrica" "Copahue" "Llaima" "Calbuco" "Osorno" \
                         "Puyehue - Cordon Caulle" "Chaiten" \
                         "Nevados de Chillan" "Laguna del Maule" "Lascar"; do
             echo "=== Analizando: $VOLCAN ==="
-            python ndvi_analyzer.py --volcan "$VOLCAN" --meses "$MESES" --no-images || echo "Error en $VOLCAN, continuando..."
+            # Un volcan puede no tener imagen despejada en la ventana: eso NO es un error
+            # del sistema. Pero si fallan TODOS, es una falla real y debe verse.
+            if python ndvi_analyzer.py --volcan "$VOLCAN" --meses "$MESES" --no-images; then
+              OK=$((OK+1))
+            else
+              FAIL=$((FAIL+1)); echo "::warning::Fallo el analisis de $VOLCAN"
+            fi
           done
+          echo "Resumen: $OK con exito, $FAIL con error."
+          if [ "$OK" -eq 0 ]; then
+            echo "::error::Fallaron los $FAIL volcanes: no se produjo ningun dato."
+            exit 1
+          fi
 
       - name: Run NDVI analysis — volcan especifico
         if: ${{ github.event.inputs.volcan != 'todos' && github.event.inputs.volcan != '' && github.event_name != 'schedule' }}
@@ -58,8 +122,15 @@ jobs:
 
       - name: Commit and push results
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add datos/ docs/index.html || true
-          git diff --staged --quiet || git commit -m "NDVI update: $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git push || true
+          git add datos/ docs/index.html
+          if git diff --staged --quiet; then
+            # Normal si en esta ventana no hubo imagenes despejadas nuevas.
+            echo "::notice::Sin datos nuevos que commitear en esta corrida."
+          else
+            git commit -m "NDVI update: $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push
+            echo "Datos nuevos commiteados y publicados."
+          fi
